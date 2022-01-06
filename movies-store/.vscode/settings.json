@@ -1,0 +1,15 @@
+// {
+//     "editor.codeActionsOnSave": {
+//         "source.fixAll.eslint": true
+//       },
+//     "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+//     // "editor.formatOnSave": false,
+//     "editor.formatOnPaste": true,
+// }
+{
+  "eslint.format.enable": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"]
+}
