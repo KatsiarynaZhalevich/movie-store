@@ -1,0 +1,27 @@
+@import "../../styles/variables.scss";
+.header {
+    background-color: $color-black;
+    color: $color-white;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    padding-left: 20px;
+    justify-content: space-between;
+    .left-part{
+        
+    }
+
+    .right-part {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        input {
+            padding-left: 0;
+        }
+        .userIcon {            
+            height: 40px;
+            width: 40px;        
+        }
+    }
+}
