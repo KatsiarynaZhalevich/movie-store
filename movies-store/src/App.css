@@ -1,8 +1,23 @@
 .App {
+  height: 100vh;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.App>.content {
+  min-height: calc(100vh - 170px);
+  width: 1280px;
+  margin: auto;
+  background-color: #fff;
 }
 
-.App-logo {
+.App .container {
+  width: 1280px;
+  margin: auto;
+  box-sizing: border-box;
+}
+/* .App-logo {
   height: 40vmin;
   pointer-events: none;
 }
@@ -35,4 +50,4 @@
   to {
     transform: rotate(360deg);
   }
-}
+} */

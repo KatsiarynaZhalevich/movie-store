@@ -1,13 +1,15 @@
 import React from 'react';
 import './App.css';
+import Footer from './components/footer/footer';
 import Header from './components/header/header';
+import Home from './components/home/home';
 
 function App(): JSX.Element {
-  console.log('d');
-
   return (
     <div className="App">
-      <Header></Header>
+      <Header />
+      <Home />
+      <Footer />
     </div>
   );
 }

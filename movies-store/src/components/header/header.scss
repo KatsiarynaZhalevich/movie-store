@@ -7,8 +7,17 @@
     align-items: center;
     padding-left: 20px;
     justify-content: space-between;
+    
     .left-part{
+        display: flex;
+        align-items: center;
         
+
+        button svg {
+            height: 45px;
+            width: 45px;
+            color: $color-white;
+        }
     }
 
     .right-part {
@@ -19,9 +28,18 @@
         input {
             padding-left: 0;
         }
-        .userIcon {            
-            height: 40px;
-            width: 40px;        
+        .iconWrapper{
+            display: flex;
+            button  {
+                padding: 0;
+                .icon {            
+                    height: 40px;
+                    width: 40px; 
+                    color: $color-white;      
+                    padding: 0; 
+                }
+            }
         }
+        
     }
 }
