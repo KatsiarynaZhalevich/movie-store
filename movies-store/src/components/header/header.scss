@@ -1,45 +1,86 @@
-@import "../../styles/variables.scss";
+@import '../../styles/variables.scss';
 .header {
-    background-color: $color-black;
-    color: $color-white;
-    height: 70px;
+  background-color: $color-black;
+  color: $color-white;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+  justify-content: space-between;
+
+  .left-part {
     display: flex;
     align-items: center;
-    padding-left: 20px;
+
+    button svg {
+      height: 45px;
+      width: 45px;
+      color: $color-white;
+    }
+  }
+
+  .right-part {
+    display: flex;
     justify-content: space-between;
-    
-    .left-part{
-        display: flex;
-        align-items: center;
-        
-
-        button svg {
-            height: 45px;
-            width: 45px;
-            color: $color-white;
-        }
-    }
-
-    .right-part {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-
-        input {
-            padding-left: 0;
-        }
-        .iconWrapper{
-            display: flex;
-            button  {
-                padding: 0;
-                .icon {            
-                    height: 40px;
-                    width: 40px; 
-                    color: $color-white;      
-                    padding: 0; 
-                }
+    align-items: center;
+    .search {
+      position: relative;
+      input {
+        padding-left: 0;
+      }
+      .search-items-wrapper {
+        position: absolute;
+        border: 1px solid $color-grey;
+        border-radius: 4px;
+        .search-items {
+          list-style-type: none;
+          text-align: left;
+          padding: 0;
+          background-color: $color-white;   
+          width: 235px;
+          li {
+            button {
+              width: 100%;
+              text-align: left;
+              border: none;
+              outline: none;
+              margin-bottom: 5px;
+              background-color: $color-white;
+              font-size: 14px;
+              padding: 10px;
+              &:last-child{
+                  margin-bottom: 0;
+              }
+              &:hover {
+                background-color: $color-lightGrey;
+              }
             }
+          }
+          li.first {
+            color: $color-black;
+            font-weight: bold;
+            border-bottom: 1px solid $color-black;
+            padding: 5px 10px;
+          }
         }
-        
+        .empty-search-list {
+            color: $color-grey;
+            padding: 5px;
+        }
+      }
     }
+
+    .iconWrapper {
+      display: flex;
+      button {
+        padding: 0;
+        .icon {
+          height: 40px;
+          width: 40px;
+          color: $color-white;
+          padding: 0;
+        }
+      }
+    }
+  }
 }

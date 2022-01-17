@@ -1,3 +1,51 @@
+@import './../../styles/variables';
+
 .home {
+  padding-bottom: 20px;
+  padding-top: 50px;
+  .section-item {
     
+    h2 {
+      text-align: left;
+      margin-left: 5%;
+    }
+    .movies-wrapper, .people-wrapper {
+      width: 90%;
+      height: 250px;
+      margin: auto;
+      display: flex;
+      overflow-x: scroll;
+      &::-webkit-scrollbar {
+        height: 5px;
+        border-radius: 2px;
+        background-color: $color-lightGrey;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background-color: $color-grey;
+        border-radius: 2px;
+      }
+
+      .movie-item,
+      .person-item {
+        box-sizing: border-box;
+        margin: 10px;
+
+        img {
+          height: 200px;
+          display: inline-block;
+          border-radius: 20px;
+          max-width: 134px;
+        }
+      }
+    }
+    .people-wrapper {
+      height: 275px;
+      .person-item {        
+          text-decoration: none;
+          color: $color-black;
+        
+      }
+    }
+  }
 }

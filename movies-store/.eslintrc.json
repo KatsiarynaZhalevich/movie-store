@@ -6,7 +6,7 @@
     "extends": [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
-        "plugin:react-hooks/recommended",
+        // "plugin:react-hooks/recommended",
         "plugin:react/recommended",
         "plugin:import/errors",
         "plugin:import/warnings",
@@ -25,6 +25,7 @@
         "sourceType": "module"
     },
     "plugins": [
+        "json",
         "react",
         "@typescript-eslint",
         "prettier"
@@ -44,3 +45,4 @@
         // "unused-imports/no-unused-imports": "warn"
     }
 }
+

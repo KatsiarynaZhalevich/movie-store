@@ -1,7 +1,128 @@
-import React from 'react';
-import './home';
+import React, { useCallback, useEffect, useState } from 'react';
+import './home.scss';
+import { IBaseMovie, IPerson } from '../../interfaces';
+import { API_KEY, API_LINK, IMAGE_URL, PERSON_PLACEHOLDER } from '../../variables';
+import Skeleton from '@mui/material/Skeleton';
 
 const Home = (): JSX.Element => {
-  return <section className="content home">home</section>;
+  const [load, setLoad] = useState({
+    loadMovie: false,
+    loadTvShow: false,
+    loadPeople: false,
+  });
+
+  const [trendMovies, setTrendMovie] = useState<IBaseMovie[]>([]);
+  const [trendTvShows, setTrendTvShows] = useState<IBaseMovie[]>([]);
+  const [trendPeople, setTrendPeople] = useState<IPerson[]>([]);
+
+  const getTrendMovies = useCallback(() => {
+    setLoad({ ...load, loadMovie: true });
+    fetch(`${API_LINK}trending/movie/day${API_KEY}`)
+      .then((response) => response.json())
+      .then((response) => {
+        // const movies: IMovie[] = response.results.map((movie: IMovie) => {
+        //   return {
+        //     movieId: movie.movieId,
+        //     title: movie.title,
+        //     poster: `${IMAGE_URL}${movie.poster_path}`,
+        //     vote_average: movie.vote_average,
+        //   };
+        // });
+        setTrendMovie(response.results);
+        setLoad({ ...load, loadMovie: false });
+      });
+  }, []);
+  const getTrendTvShows = useCallback(() => {
+    setLoad({ ...load, loadTvShow: true });
+    fetch(`${API_LINK}trending/tv/day${API_KEY}`)
+      .then((response) => response.json())
+      .then((response) => {
+        // const tvShows: IMovie[] = response.results.map((tvShow: any) => {
+        //   return {
+        //     movieId: tvShow.id,
+        //     title: tvShow.title,
+        //     poster: `${IMAGE_URL}${tvShow.poster_path}`,
+        //     vote_average: tvShow.vote_average,
+        //   };
+        // });
+        setTrendTvShows(response.results);
+        setLoad({ ...load, loadTvShow: false });
+      });
+  }, []);
+
+  const getTrendPeople = useCallback(() => {
+    setLoad({ ...load, loadPeople: true });
+    fetch(`${API_LINK}trending/person/day${API_KEY}`)
+      .then((response) => response.json())
+      .then((response) => {
+        // const people: IPerson[] = response.results.map((person: IPerson) => {
+        //   return {
+        //     personId: person.personId,
+        //     poster: person.profile_path ? `${IMAGE_URL}${person.profile_path}` : PERSON_PLACEHOLDER,
+        //     name: person.name,
+        //   };
+        // });
+        setTrendPeople(response.results);
+        setLoad({ ...load, loadPeople: false });
+      });
+  }, []);
+
+  useEffect(() => {
+    getTrendMovies();
+    getTrendTvShows();
+    getTrendPeople();
+  }, []);
+
+  return (
+    <section className="content home">
+      <div className="section-item">
+        <h2>Trends movies</h2>
+        <div className="movies-wrapper">
+          {trendMovies.map((movie: IBaseMovie) =>
+            !load.loadMovie ? (
+              <a href="#" key={movie.id} className="movie-item">
+                <img src={`${IMAGE_URL}${movie.poster_path}`}></img>
+              </a>
+            ) : (
+              <Skeleton key={movie.id} variant="rectangular" height={200} width={100} />
+            )
+          )}
+        </div>
+      </div>
+      <div className="section-item">
+        <h2>Trends tvShows</h2>
+        <div className="movies-wrapper">
+          {trendTvShows.map((tvShow: IBaseMovie) =>
+            !load.loadTvShow ? (
+              <a href="#" key={tvShow.id} className="movie-item">
+                <img src={`${IMAGE_URL}${tvShow.poster_path}`}></img>
+              </a>
+            ) : (
+              <Skeleton key={tvShow.id} variant="rectangular" height={200} width={100} />
+            )
+          )}
+        </div>
+      </div>
+      <div className="section-item -people">
+        <h2>Trends people</h2>
+        <div className="people-wrapper">
+          {trendPeople.map((person: IPerson) =>
+            !load.loadPeople ? (
+              <a href="#" key={person.personId} className="person-item">
+                <img
+                  src={
+                    person.profile_path ? `${IMAGE_URL}${person.profile_path}` : PERSON_PLACEHOLDER
+                  }
+                ></img>
+                <span>{person.name}</span>
+              </a>
+            ) : (
+              <Skeleton key={person.personId} variant="rectangular" height={200} width={100} />
+            )
+          )}
+        </div>
+      </div>
+    </section>
+  );
 };
 export default Home;

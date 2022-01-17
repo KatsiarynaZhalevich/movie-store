@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { styled, alpha } from '@mui/material/styles';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 // import NoAccountsIcon from '@mui/icons-material/NoAccounts';
@@ -14,7 +14,10 @@ import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import './header.scss';
 import { InputBase } from '@mui/material';
 import MenuElement from '../../elements/menu/menuElement';
+import { API_KEY, API_LINK } from '../../variables';
+import { IMovie, IPerson, ITvShow } from '../../interfaces';
 
+// START SEARCH SETTINGS
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
@@ -54,8 +57,53 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
   },
 }));
+// END SEARCH SETTINGS
 
 const Header = (): JSX.Element => {
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchMovie, setSearchMovie] = useState([]);
+  const [searchTvShow, setSearchTvShow] = useState([]);
+  const [searchPeople, setSearchPeople] = useState([]);
+
+  const getSearchItem = (search: React.ChangeEvent<HTMLInputElement>) => {
+    const newSearch = search.target.value;
+    // setSearchList([]);
+    if (newSearch.length >= 3) {
+      try {
+        fetch(
+          `${API_LINK}search/multi${API_KEY}&language=en-US&query=${newSearch}&page=1&include_adult=false`
+        )
+          .then((response) => response.json())
+          .then((response) => {
+            setSearchMovie(
+              response.results
+                .filter((searchItem: IMovie) => searchItem.media_type === 'movie')
+                .slice(0, 5)
+            );
+            setSearchTvShow(
+              response.results
+                .filter((searchItem: ITvShow) => searchItem.media_type === 'tv')
+                .slice(0, 5)
+            );
+            setSearchPeople(
+              response.results
+                .filter((searchItem: IPerson) => searchItem.media_type === 'person')
+                .slice(0, 5)
+            );
+            setShowSearch(true);
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      setShowSearch(false);
+    }
+  };
+  const closeSearch = () => {
+    setShowSearch(false);
+  };
+
+  console.log('tv', searchTvShow);
   return (
     <header className="header">
       <div className="left-part">
@@ -68,11 +116,57 @@ const Header = (): JSX.Element => {
         <h2>Movies</h2>
       </div>
       <div className="right-part">
-        <Search>
+        <Search className="search">
           <IconButton size="large" aria-label="search" color="inherit">
             <SearchIcon />
           </IconButton>
-          <StyledInputBase placeholder="Search…" inputProps={{ 'aria-label': 'search' }} />
+          <StyledInputBase
+            placeholder="Search…"
+            inputProps={{ 'aria-label': 'search' }}
+            onChange={getSearchItem}
+            onBlur={closeSearch}
+            // value={searchValue}
+          />
+          {showSearch ? (
+            <div className="search-items-wrapper">
+              <ul className="search-items">
+                <li className="first">People</li>
+                {searchPeople.length > 0 ? (
+                  searchPeople.map((itemPeople: IPerson) => (
+                    <li key={itemPeople.personId}>
+                      <button type="button">{itemPeople.name}</button>
+                    </li>
+                  ))
+                ) : (
+                  <li className="empty-search-list">nothing to show</li>
+                )}
+              </ul>
+              <ul className="search-items">
+                <li className="first">Movies</li>
+                {searchMovie.length > 0 ? (
+                  searchMovie.map((itemMovie: IMovie) => (
+                    <li key={itemMovie.id}>
+                      <button type="button">{itemMovie.title}</button>
+                    </li>
+                  ))
+                ) : (
+                  <li className="empty-search-list">nothing to show</li>
+                )}
+              </ul>
+              <ul className="search-items">
+                <li className="first">TvShow</li>
+                {searchTvShow.length > 0 ? (
+                  searchTvShow.map((itemTvShow: ITvShow) => (
+                    <li key={itemTvShow.id}>
+                      <button type="button">{itemTvShow.name}</button>
+                    </li>
+                  ))
+                ) : (
+                  <li className="empty-search-list">nothing to show</li>
+                )}
+              </ul>
+            </div>
+          ) : null}
         </Search>
         <div className="iconWrapper">
           <IconButton size="large" aria-label="search" color="inherit">
