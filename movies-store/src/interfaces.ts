@@ -33,12 +33,12 @@ export interface ITvShow extends IBaseMovie {
   number_of_seasons: number;
 }
 export interface IPerson {
-  personId: number;
+  id: number;
   name: string;
-  birthday?: string;
-  deathday?: string;
-  biography?: string;
-  place_of_birth?: string;
+  birthday: string;
+  deathday: string;
+  biography: string;
+  place_of_birth: string;
   profile_path: string;
   media_type: string;
 }

@@ -20,14 +20,6 @@ const Home = (): JSX.Element => {
     fetch(`${API_LINK}trending/movie/day${API_KEY}`)
       .then((response) => response.json())
       .then((response) => {
-        // const movies: IMovie[] = response.results.map((movie: IMovie) => {
-        //   return {
-        //     movieId: movie.movieId,
-        //     title: movie.title,
-        //     poster: `${IMAGE_URL}${movie.poster_path}`,
-        //     vote_average: movie.vote_average,
-        //   };
-        // });
         setTrendMovie(response.results);
         setLoad({ ...load, loadMovie: false });
       });
@@ -37,14 +29,6 @@ const Home = (): JSX.Element => {
     fetch(`${API_LINK}trending/tv/day${API_KEY}`)
       .then((response) => response.json())
       .then((response) => {
-        // const tvShows: IMovie[] = response.results.map((tvShow: any) => {
-        //   return {
-        //     movieId: tvShow.id,
-        //     title: tvShow.title,
-        //     poster: `${IMAGE_URL}${tvShow.poster_path}`,
-        //     vote_average: tvShow.vote_average,
-        //   };
-        // });
         setTrendTvShows(response.results);
         setLoad({ ...load, loadTvShow: false });
       });
@@ -55,13 +39,6 @@ const Home = (): JSX.Element => {
     fetch(`${API_LINK}trending/person/day${API_KEY}`)
       .then((response) => response.json())
       .then((response) => {
-        // const people: IPerson[] = response.results.map((person: IPerson) => {
-        //   return {
-        //     personId: person.personId,
-        //     poster: person.profile_path ? `${IMAGE_URL}${person.profile_path}` : PERSON_PLACEHOLDER,
-        //     name: person.name,
-        //   };
-        // });
         setTrendPeople(response.results);
         setLoad({ ...load, loadPeople: false });
       });
@@ -108,7 +85,7 @@ const Home = (): JSX.Element => {
         <div className="people-wrapper">
           {trendPeople.map((person: IPerson) =>
             !load.loadPeople ? (
-              <a href="#" key={person.personId} className="person-item">
+              <a href="#" key={person.id} className="person-item">
                 <img
                   src={
                     person.profile_path ? `${IMAGE_URL}${person.profile_path}` : PERSON_PLACEHOLDER
@@ -117,7 +94,7 @@ const Home = (): JSX.Element => {
                 <span>{person.name}</span>
               </a>
             ) : (
-              <Skeleton key={person.personId} variant="rectangular" height={200} width={100} />
+              <Skeleton key={person.id} variant="rectangular" height={200} width={100} />
             )
           )}
         </div>

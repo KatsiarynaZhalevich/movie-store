@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { styled, alpha } from '@mui/material/styles';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 // import NoAccountsIcon from '@mui/icons-material/NoAccounts';
@@ -8,16 +8,17 @@ import MenuItem from '@mui/material/MenuItem';
 import MenuIcon from '@mui/icons-material/Menu';
 // import BookmarkIcon from '@mui/icons-material/Bookmark';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
-
 // import MenuIcon from '@mui/icons-material/Menu';
 // // import Modal from 'react-modal';
 import './header.scss';
 import { InputBase } from '@mui/material';
 import MenuElement from '../../elements/menu/menuElement';
-import { API_KEY, API_LINK } from '../../variables';
+import { API_KEY, API_LINK, ROUTES } from '../../variables';
 import { IMovie, IPerson, ITvShow } from '../../interfaces';
+import { takeFirstFive } from '../../utils/takeFive';
+import { useHistory } from 'react-router-dom';
 
-// START SEARCH SETTINGS
+//         START SEARCH SETTINGS          //
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
@@ -57,53 +58,72 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
   },
 }));
-// END SEARCH SETTINGS
+//     END SEARCH SETTINGS   ///
 
 const Header = (): JSX.Element => {
-  const [showSearch, setShowSearch] = useState(false);
-  const [searchMovie, setSearchMovie] = useState([]);
-  const [searchTvShow, setSearchTvShow] = useState([]);
-  const [searchPeople, setSearchPeople] = useState([]);
+  const [searchValue, setSearchValue] = useState({
+    value: '',
+    show: false,
+  });
+  const [searchMovie, setSearchMovie] = useState<IMovie[]>([]);
+  const [searchTvShow, setSearchTvShow] = useState<ITvShow[]>([]);
+  const [searchPeople, setSearchPeople] = useState<IPerson[]>([]);
+  const history = useHistory();
+  const searchBtn = useRef(null);
 
   const getSearchItem = (search: React.ChangeEvent<HTMLInputElement>) => {
     const newSearch = search.target.value;
-    // setSearchList([]);
-    if (newSearch.length >= 3) {
+    if (newSearch.trim()) {
+      setSearchValue({
+        show: newSearch.trim().length > 2 ? true : false,
+        value: newSearch.trim() ? newSearch : '',
+      });
+    }
+    if (newSearch.trim().length > 2) {
       try {
         fetch(
           `${API_LINK}search/multi${API_KEY}&language=en-US&query=${newSearch}&page=1&include_adult=false`
         )
           .then((response) => response.json())
           .then((response) => {
-            setSearchMovie(
-              response.results
-                .filter((searchItem: IMovie) => searchItem.media_type === 'movie')
-                .slice(0, 5)
+            const movieToShow: IMovie[] = takeFirstFive(
+              response.results.filter((searchItem: IMovie) => searchItem.media_type === 'movie')
             );
-            setSearchTvShow(
-              response.results
-                .filter((searchItem: ITvShow) => searchItem.media_type === 'tv')
-                .slice(0, 5)
+            setSearchMovie(movieToShow);
+            const tvShowToShow: ITvShow[] = takeFirstFive(
+              response.results.filter((searchItem: ITvShow) => searchItem.media_type === 'tv')
             );
-            setSearchPeople(
-              response.results
-                .filter((searchItem: IPerson) => searchItem.media_type === 'person')
-                .slice(0, 5)
+            setSearchTvShow(tvShowToShow);
+            const peopleToShow: IPerson[] = takeFirstFive(
+              response.results.filter((searchItem: IPerson) => searchItem.media_type === 'person')
             );
-            setShowSearch(true);
+            setSearchPeople(peopleToShow);
           });
       } catch (error) {
         console.log(error);
       }
-    } else {
-      setShowSearch(false);
     }
   };
-  const closeSearch = () => {
-    setShowSearch(false);
+  const closeSearch = (): void => {
+    setSearchValue({ ...searchValue, show: false });
   };
 
-  console.log('tv', searchTvShow);
+  const setRoute = (path: string, search?: string): void => {
+    if (searchValue.value.length > 2) {
+      history.push({
+        pathname: path,
+        search: search || '',
+      });
+      setSearchValue({ value: '', show: false });
+    }
+  };
+
+  const checkEnter = (event: React.KeyboardEvent<HTMLInputElement>): void => {
+    if (event.key === 'Enter') {
+      setRoute(ROUTES.SEARCH_PAGE_ROUTE, searchValue.value);
+    }
+  };
+
   return (
     <header className="header">
       <div className="left-part">
@@ -116,24 +136,33 @@ const Header = (): JSX.Element => {
         <h2>Movies</h2>
       </div>
       <div className="right-part">
-        <Search className="search">
-          <IconButton size="large" aria-label="search" color="inherit">
+        <Search className="search" onBlur={closeSearch}>
+          <IconButton
+            type="submit"
+            ref={searchBtn}
+            size="large"
+            aria-label="search"
+            color="inherit"
+            onClick={() => {
+              setRoute(ROUTES.SEARCH_PAGE_ROUTE, searchValue.value);
+            }}
+          >
             <SearchIcon />
           </IconButton>
           <StyledInputBase
             placeholder="Search…"
             inputProps={{ 'aria-label': 'search' }}
             onChange={getSearchItem}
-            onBlur={closeSearch}
-            // value={searchValue}
+            onKeyPress={checkEnter}
+            value={searchValue.value}
           />
-          {showSearch ? (
+          {searchValue.show ? (
             <div className="search-items-wrapper">
               <ul className="search-items">
                 <li className="first">People</li>
                 {searchPeople.length > 0 ? (
                   searchPeople.map((itemPeople: IPerson) => (
-                    <li key={itemPeople.personId}>
+                    <li key={itemPeople.id}>
                       <button type="button">{itemPeople.name}</button>
                     </li>
                   ))
