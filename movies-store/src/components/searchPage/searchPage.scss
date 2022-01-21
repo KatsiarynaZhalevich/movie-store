@@ -1,16 +1,70 @@
 @import '../../styles/variables.scss';
 
-.movies {
-  display: flex;
-  flex-direction: row;
-  
-  .left-part {
-    width: 250px;
-    margin-top: 15px;
-    
-    h3 {
-        text-transform: uppercase;
-        font-size: 14px;
+.multi-search {
+  padding: 50px;
+  box-sizing: border-box;
+  >p {
+    text-align: left;
+    margin-left: 20%;
+    margin-bottom: 10px;
+  }
+  .multi-search-container {
+    width: 60%;
+    margin: 0 auto;
+    background-color: #f4f4f4;
+    padding: 10px;
+    padding-left: 30px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    .title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      
+      button {
+        background-color: $color-black;
+        height: 30px;
+      }
+      button[disabled] {
+        background-color: $color-lightGrey;
+        border: 1px solid $color-black;
+      }
+    }
+    .data {
+      display: flex;
+      margin-bottom: 10px;
+      .image-wrapper {
+        width: 85px;
+
+        img {
+          width: 100%;
+          min-width: 85px;
+          border-radius: 4px;
+          &:hover {
+            cursor: pointer;
+          }
+        }
+      }
+      .search-item-info {
+        margin-left: 10px;
+        display: flex;
+        flex-direction: column;
+        a {
+          text-decoration: none;
+          color: $color-black;
+          font-size: 20px;
+          font-weight: bold;
+          text-align: left;
+          &:hover {
+            cursor: pointer;
+            color: $color-orange;
+          }
+        }
+        p {
+          text-align: left;
+        }
+      }
     }
   }
 }

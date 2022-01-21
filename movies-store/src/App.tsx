@@ -6,6 +6,7 @@ import Home from './components/home/home';
 import { ROUTES } from './variables';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import SearchPage from './components/searchPage/searchPage';
+import GlobalSearch from './components/globalSearch/globalSearch';
 
 function App(): JSX.Element {
   return (
@@ -19,6 +20,9 @@ function App(): JSX.Element {
             </Route>
             <Route exact path={ROUTES.SEARCH_PAGE_ROUTE}>
               <SearchPage />
+            </Route>
+            <Route exact path={ROUTES.GLOBAL_SEARCH}>
+              <GlobalSearch />
             </Route>
           </Switch>
         </Suspense>

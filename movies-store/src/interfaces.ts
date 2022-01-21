@@ -17,7 +17,7 @@ export interface IBaseMovie {
   id: number;
   genre: string[] | number[];
   poster_path: string;
-  release_date: string;
+  // release_date: string;
   overview: string;
   media_type: string;
   createdBy: string;
@@ -27,9 +27,11 @@ export interface IBaseMovie {
 }
 export interface IMovie extends IBaseMovie {
   title: string;
+  release_date: string;
 }
 export interface ITvShow extends IBaseMovie {
   name: string;
+  first_air_date: string;
   number_of_seasons: number;
 }
 export interface IPerson {
@@ -41,4 +43,7 @@ export interface IPerson {
   place_of_birth: string;
   profile_path: string;
   media_type: string;
+  known_for_department: string;
+  popularity: number;
 }
+

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { styled, alpha } from '@mui/material/styles';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 // import NoAccountsIcon from '@mui/icons-material/NoAccounts';
@@ -11,14 +11,14 @@ import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 // import MenuIcon from '@mui/icons-material/Menu';
 // // import Modal from 'react-modal';
 import './header.scss';
-import { InputBase } from '@mui/material';
+import { FormControl, InputBase, Select } from '@mui/material';
 import MenuElement from '../../elements/menu/menuElement';
 import { API_KEY, API_LINK, ROUTES } from '../../variables';
 import { IMovie, IPerson, ITvShow } from '../../interfaces';
-import { takeFirstFive } from '../../utils/takeFive';
+import { takeFirstFive } from '../../utils/utils';
 import { useHistory } from 'react-router-dom';
 
-//         START SEARCH SETTINGS          //
+//      START SEARCH SETTINGS          //
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
@@ -69,16 +69,15 @@ const Header = (): JSX.Element => {
   const [searchTvShow, setSearchTvShow] = useState<ITvShow[]>([]);
   const [searchPeople, setSearchPeople] = useState<IPerson[]>([]);
   const history = useHistory();
-  const searchBtn = useRef(null);
+  const [searchCategory, setSearchCategory] = useState('Movie');
 
   const getSearchItem = (search: React.ChangeEvent<HTMLInputElement>) => {
     const newSearch = search.target.value;
-    if (newSearch.trim()) {
-      setSearchValue({
-        show: newSearch.trim().length > 2 ? true : false,
-        value: newSearch.trim() ? newSearch : '',
-      });
-    }
+    setSearchValue({
+      show: newSearch.trim().length > 2 ? true : false,
+      value: newSearch.trim() ? newSearch : '',
+    });
+
     if (newSearch.trim().length > 2) {
       try {
         fetch(
@@ -109,13 +108,19 @@ const Header = (): JSX.Element => {
   };
 
   const setRoute = (path: string, search?: string): void => {
-    if (searchValue.value.length > 2) {
+    if (path === ROUTES.SEARCH_PAGE_ROUTE && searchValue.value.length > 2) {
+      history.push({
+        pathname: path,
+        search: `search=${search}` || '',
+      });
+      setSearchValue({ value: '', show: false });
+    } else {
       history.push({
         pathname: path,
         search: search || '',
       });
-      setSearchValue({ value: '', show: false });
     }
+    setSearchCategory('Movie');
   };
 
   const checkEnter = (event: React.KeyboardEvent<HTMLInputElement>): void => {
@@ -123,80 +128,113 @@ const Header = (): JSX.Element => {
       setRoute(ROUTES.SEARCH_PAGE_ROUTE, searchValue.value);
     }
   };
+  const changeSearchCategory = (event: any) => {
+    setSearchCategory(event.target.value as string);
+  };
 
   return (
     <header className="header">
       <div className="left-part">
         <MenuElement title={<MenuIcon />}>
-          <MenuItem sx={menuItemStyle}>Home</MenuItem>
-          <MenuItem sx={menuItemStyle}>All</MenuItem>
-          <MenuItem sx={menuItemStyle}>Movies</MenuItem>
-          <MenuItem sx={menuItemStyle}>Series</MenuItem>
-        </MenuElement>
-        <h2>Movies</h2>
-      </div>
-      <div className="right-part">
-        <Search className="search" onBlur={closeSearch}>
-          <IconButton
-            type="submit"
-            ref={searchBtn}
-            size="large"
-            aria-label="search"
-            color="inherit"
+          <MenuItem
+            sx={menuItemStyle}
             onClick={() => {
-              setRoute(ROUTES.SEARCH_PAGE_ROUTE, searchValue.value);
+              setRoute(ROUTES.HOME_ROUTE);
             }}
           >
-            <SearchIcon />
-          </IconButton>
-          <StyledInputBase
-            placeholder="Search…"
-            inputProps={{ 'aria-label': 'search' }}
-            onChange={getSearchItem}
-            onKeyPress={checkEnter}
-            value={searchValue.value}
-          />
-          {searchValue.show ? (
-            <div className="search-items-wrapper">
-              <ul className="search-items">
-                <li className="first">People</li>
-                {searchPeople.length > 0 ? (
-                  searchPeople.map((itemPeople: IPerson) => (
-                    <li key={itemPeople.id}>
-                      <button type="button">{itemPeople.name}</button>
-                    </li>
-                  ))
-                ) : (
-                  <li className="empty-search-list">nothing to show</li>
-                )}
-              </ul>
-              <ul className="search-items">
-                <li className="first">Movies</li>
-                {searchMovie.length > 0 ? (
-                  searchMovie.map((itemMovie: IMovie) => (
-                    <li key={itemMovie.id}>
-                      <button type="button">{itemMovie.title}</button>
-                    </li>
-                  ))
-                ) : (
-                  <li className="empty-search-list">nothing to show</li>
-                )}
-              </ul>
-              <ul className="search-items">
-                <li className="first">TvShow</li>
-                {searchTvShow.length > 0 ? (
-                  searchTvShow.map((itemTvShow: ITvShow) => (
-                    <li key={itemTvShow.id}>
-                      <button type="button">{itemTvShow.name}</button>
-                    </li>
-                  ))
-                ) : (
-                  <li className="empty-search-list">nothing to show</li>
-                )}
-              </ul>
-            </div>
-          ) : null}
-        </Search>
+            Home
+          </MenuItem>
+          <MenuItem sx={menuItemStyle}>Movies</MenuItem>
+          <MenuItem sx={menuItemStyle}>TvShows</MenuItem>
+          <MenuItem sx={menuItemStyle}>People</MenuItem>
+        </MenuElement>
+        <h2
+          onClick={() => {
+            setRoute(ROUTES.HOME_ROUTE);
+          }}
+        >
+          Movies
+        </h2>
+      </div>
+      <div className="right-part">
+        {/* <h3>Search in</h3>/ */}
+        <div className="search-field">
+          <FormControl>
+            <Select
+              className="category"
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={searchCategory}
+              onChange={changeSearchCategory}
+            >
+              <MenuItem value="Movie" selected>
+                Movie
+              </MenuItem>
+              <MenuItem value="TvShow">TvShow</MenuItem>
+              <MenuItem value="Person">Person</MenuItem>
+            </Select>
+          </FormControl>
+          <Search className="search" onBlur={closeSearch}>
+            <IconButton
+              type="submit"
+              size="large"
+              aria-label="search"
+              color="inherit"
+              onClick={() => {
+                setRoute(ROUTES.SEARCH_PAGE_ROUTE, searchValue.value);
+              }}
+            >
+              <SearchIcon />
+            </IconButton>
+            <StyledInputBase
+              placeholder={`Search in ${searchCategory}`}
+              inputProps={{ 'aria-label': 'search' }}
+              onChange={getSearchItem}
+              onKeyPress={checkEnter}
+              value={searchValue.value}
+            />
+            {searchValue.show ? (
+              <div className="search-items-wrapper">
+                <ul className="search-items">
+                  <li className="first">People</li>
+                  {searchPeople.length > 0 ? (
+                    searchPeople.map((itemPeople: IPerson) => (
+                      <li key={itemPeople.id}>
+                        <button type="button">{itemPeople.name}</button>
+                      </li>
+                    ))
+                  ) : (
+                    <li className="empty-search-list">nothing to show</li>
+                  )}
+                </ul>
+                <ul className="search-items">
+                  <li className="first">Movies</li>
+                  {searchMovie.length > 0 ? (
+                    searchMovie.map((itemMovie: IMovie) => (
+                      <li key={itemMovie.id}>
+                        <button type="button">{itemMovie.title}</button>
+                      </li>
+                    ))
+                  ) : (
+                    <li className="empty-search-list">nothing to show</li>
+                  )}
+                </ul>
+                <ul className="search-items">
+                  <li className="first">TvShow</li>
+                  {searchTvShow.length > 0 ? (
+                    searchTvShow.map((itemTvShow: ITvShow) => (
+                      <li key={itemTvShow.id}>
+                        <button type="button">{itemTvShow.name}</button>
+                      </li>
+                    ))
+                  ) : (
+                    <li className="empty-search-list">nothing to show</li>
+                  )}
+                </ul>
+              </div>
+            ) : null}
+          </Search>
+        </div>
         <div className="iconWrapper">
           <IconButton size="large" aria-label="search" color="inherit">
             <BookmarkBorderIcon className="icon" />

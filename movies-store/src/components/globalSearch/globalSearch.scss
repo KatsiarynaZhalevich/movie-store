@@ -1,0 +1,25 @@
+.global-search {
+  display: flex;
+  padding: 20px;
+  .left-part {
+    width: 200px;
+    .sorting {
+    }
+    .filters {
+      .filter {
+        margin: 10px 0;
+        .filter-title {
+          text-align: left;  
+          margin-bottom: 5px;        
+        }
+        .checkbox span{
+          height: 30px;
+
+        }
+      }
+    }
+  }
+  .right-part {
+    flex-grow: 2;
+  }
+}

@@ -7,4 +7,5 @@ export const PERSON_PLACEHOLDER =
 export const ROUTES = {
   HOME_ROUTE: '/',
   SEARCH_PAGE_ROUTE: '/search-page',
+  GLOBAL_SEARCH: '/global-search',
 };

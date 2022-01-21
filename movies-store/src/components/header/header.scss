@@ -17,14 +17,36 @@
       width: 45px;
       color: $color-white;
     }
+    h2:hover {
+      cursor: pointer;
+    }
   }
 
   .right-part {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    .category {
+      background-color: #404040;
+      height: 48px;
+      width: 104px;
+      line-height: 20px;
+      color: $color-lightGrey-secondary;
+      font-weight: bold;
+      margin-left: 5px;
+      svg {
+        color: $color-lightGrey-secondary;
+      }
+      fieldset {
+        border: none
+      }
+    }
+    .search-field {
+      display: flex;
+    }
     .search {
       position: relative;
+      margin-left: 10px;
       input {
         padding-left: 0;
       }

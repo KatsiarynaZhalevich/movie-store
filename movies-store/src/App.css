@@ -1,6 +1,6 @@
 .App {
-  height: 100vh;
-  text-align: center;
+  /* height: 100vh;
+  text-align: center; */
 }
 .App>.content {
   min-height: calc(100vh - 170px);
@@ -8,6 +8,7 @@
   width: 100%;
   margin: auto;
   background-color: #fff;
+  box-sizing: border-box;
 }
 
 .App .container {
