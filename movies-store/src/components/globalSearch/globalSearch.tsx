@@ -1,15 +1,38 @@
-import React from 'react';
-import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mui/material';
+import React, { useCallback, useEffect, useState } from 'react';
+import { FormControl, FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select } from '@mui/material';
 import './globalSearch.scss';
+import { useHistory } from 'react-router-dom';
+import { API_KEY, API_LINK } from '../../variables';
+import { IGenre } from '../../interfaces';
 
 const GlobalSearch = (): JSX.Element => {
   const search = new URLSearchParams(location.search);
-  const mediaType = search.get('media_type');
-  console.log(mediaType);
+  const history = useHistory();
+  const [mediaType, setMediaType] = useState(search.get('media_type'));
+  const [allGenres, setAllGenres] = useState([]);
+  const [genre, setGenre] = useState("");
+  const changeMediaType = (event: any) => {
+    const newSearch = new URLSearchParams(location.search);
+    newSearch.set('media_type', event.target.value);
+    history.replace({ search: newSearch.toString() });
+    setMediaType(newSearch.get('media_type'));
+  };
 
-  // const getPeopleDepartment () => {
+  const getGenres = useCallback(async() => {
+    await fetch(`${API_LINK}genre/movie/list${API_KEY}`)
+      .then((response) => response.json())
+      .then((response) => {
+        setAllGenres(response.genres);
+      });
+  }, []);
 
-  // }
+  const changeGenre = (event: any) => {
+    setGenre(event.target.value as string);
+  };
+
+  useEffect(() => {
+    getGenres();
+  }, []);
   return (
     <div className="content global-search">
       <div className="left-part">
@@ -30,10 +53,16 @@ const GlobalSearch = (): JSX.Element => {
               >
                 Media type
               </FormLabel>
-              <RadioGroup aria-label="gender" defaultValue="female" name="radio-buttons-group">
+              <RadioGroup
+                aria-label="media-type"
+                name="radio-buttons-group"
+                onChange={changeMediaType}
+                defaultValue=""
+              >
                 <FormControlLabel
                   className="checkbox"
                   value="person"
+                  checked={mediaType === 'person'}
                   control={
                     <Radio
                       sx={{
@@ -47,6 +76,7 @@ const GlobalSearch = (): JSX.Element => {
                 <FormControlLabel
                   className="checkbox"
                   value="movie"
+                  checked={mediaType === 'movie'}
                   control={
                     <Radio
                       sx={{
@@ -60,6 +90,7 @@ const GlobalSearch = (): JSX.Element => {
                 <FormControlLabel
                   className="checkbox"
                   value="tvShow"
+                  checked={mediaType === 'tvShow'}
                   control={
                     <Radio
                       sx={{
@@ -71,6 +102,27 @@ const GlobalSearch = (): JSX.Element => {
                   label="tvShow"
                 />
               </RadioGroup>
+            </FormControl>
+          </div>
+          <div className="filter">
+            <FormControl size="small" >
+            <InputLabel id="demo-controlled-open-select-label" >Genre</InputLabel>
+              <Select
+                sx={{ 
+                  color: '#1f1f1f',
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#ff6600' },}}
+                variant='outlined'
+                label="Genre"
+                className="genres"
+                value={genre}
+                onChange={changeGenre}
+              >
+              {allGenres.map((genre: IGenre) => (
+              <MenuItem key={genre.id} value={genre.name} className='item-genre'>
+                {genre.name}
+              </MenuItem>
+            ))}
+              </Select>
             </FormControl>
           </div>
           {mediaType === 'person' ? (

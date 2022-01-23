@@ -1,12 +1,16 @@
+@import '../../styles/variables.scss';
+
 .global-search {
   display: flex;
-  padding: 20px;
+  padding:  20px;
   .left-part {
     width: 200px;
+    padding: 20px 0;
     .sorting {
     }
     .filters {
       .filter {
+        
         margin: 10px 0;
         .filter-title {
           text-align: left;  
@@ -14,12 +18,22 @@
         }
         .checkbox span{
           height: 30px;
-
+        }
+        .genres {
+          width: 170px;
+          fieldset.Mui-focused { border-color: '#1f1f1f'; }
+        }
+        label {
+          color: $color-black;
         }
       }
     }
   }
   .right-part {
     flex-grow: 2;
+    padding: 20px 0;
   }
+}
+.MuiList-root {
+  max-height: 200px;
 }
