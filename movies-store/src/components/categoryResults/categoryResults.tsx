@@ -9,13 +9,10 @@ import {
   RadioGroup,
   Select,
 } from '@mui/material';
-import './globalSearch.scss';
+import './categoryResults.scss';
 import { useHistory, useLocation } from 'react-router-dom';
-import { API_KEY, API_LINK } from '../../variables';
+import { API_KEY, API_LINK, IMAGE_URL, PERSON_PLACEHOLDER, POSTER_PLACEHOLDER } from '../../variables';
 import { IMovie, ITvShow, IPerson, IGenre } from '../../interfaces';
-import PersonItem from '../../elements/personItem/personItem';
-import MovieItem from '../../elements/movieItem/movieItem';
-import TvShowItem from '../../elements/tvShowItem/tvShowItem';
 
 type Year = {
   id: number;
@@ -94,7 +91,7 @@ const countries = [
     name: 'South Korea',
   },
 ];
-const GlobalSearch = (): JSX.Element => {
+const CategoryResults = (): JSX.Element => {
   const history = useHistory();
   const location = useLocation();
   const search = new URLSearchParams(location.search);
@@ -366,13 +363,18 @@ const GlobalSearch = (): JSX.Element => {
         {mediaType === 'person' ? (
           searchResult.people ? (
             searchResult.people.map((res: IPerson) => (
-              <PersonItem
-                key={res.id}
-                id={res.id}
-                name={res.name}
-                profile_path={res.profile_path}
-                known_for_department={res.known_for_department}
-              />
+              <div key={res.id} className="result-item">
+                <div className="image-wrapper">
+                  <img
+                    src={res.profile_path ? `${IMAGE_URL}${res.profile_path}` : PERSON_PLACEHOLDER}
+                    alt={res.name}
+                  />
+                </div>
+                <div className="info">
+                  <h3>{res.name}</h3>
+                  <p>{res.known_for_department}</p>
+                </div>
+              </div>
             ))
           ) : (
             <p>
@@ -380,41 +382,45 @@ const GlobalSearch = (): JSX.Element => {
             </p>
           )
         ) : mediaType === 'movie' ? (
-          searchResult.movie ? (
-            searchResult.movie.map((res: IMovie) => (
-              <MovieItem
-                key={res.id}
-                id={res.id}
-                title={res.title}
-                poster_path={res.poster_path}
-                release_date={res.release_date}
-                overview={res.overview}
-              />
-            ))
-          ) : (
-            <p>
-              no result: <strong> {query}</strong>
-            </p>
-          )
-        ) : searchResult.tvShow ? (
-          searchResult.tvShow.map((res: ITvShow) => (
-            <TvShowItem
-              key={res.id}
-              id={res.id}
-              name={res.name}
-              poster_path={res.poster_path}
-              first_air_date={res.first_air_date}
-              overview={res.overview}
-              number_of_seasons={res.number_of_seasons}
-            />
+          searchResult.movie.map((res: IMovie) => (
+            <div key={res.id} className="result-item">
+              <div className="image-wrapper">
+                <img
+                  src={res.poster_path ? `${IMAGE_URL}${res.poster_path}` : POSTER_PLACEHOLDER}
+                  alt={res.title}
+                />
+              </div>
+              <div className="info">
+                <h3>
+                  {res.title} ({res.release_date.slice(0, 4)})
+                </h3>
+                <p>{res.overview || 'no overview'}</p>
+              </div>
+            </div>
           ))
         ) : (
-          <p>
-            no result: <strong> {query}</strong>
-          </p>
+          searchResult.tvShow.map((res: ITvShow) => (
+            <div key={res.id} className="result-item">
+              <div className="image-wrapper">
+                <img
+                  src={res.poster_path ? `${IMAGE_URL}${res.poster_path}` : POSTER_PLACEHOLDER}
+                  alt={res.name}
+                />
+              </div>
+              <div className="info">
+                <h3>
+                  {res.name} ({res.first_air_date.slice(0, 4)})
+                </h3>
+                <p>{res.overview || 'no overview'}</p>
+                <p>
+                  Number of seasons: <strong>{res.number_of_seasons || '1'}</strong>
+                </p>
+              </div>
+            </div>
+          ))
         )}
       </div>
     </div>
   );
 };
-export default GlobalSearch;
+export default CategoryResults;

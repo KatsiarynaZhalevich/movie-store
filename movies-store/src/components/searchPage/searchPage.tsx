@@ -2,11 +2,14 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 // import { takeFirstFive } from '../../utils/utils';
 import { IMovie, IPerson, ITvShow } from '../../interfaces';
-import { API_LINK, API_KEY, IMAGE_URL, PERSON_PLACEHOLDER, ROUTES } from '../../variables';
+import { API_LINK, API_KEY, ROUTES } from '../../variables';
 import './searchPage.scss';
 import { Button } from '@mui/material';
+import TvShowItem from '../../elements/tvShowItem/tvShowItem';
+import MovieItem from '../../elements/movieItem/movieItem';
+import PersonItem from '../../elements/personItem/personItem';
 
-const SearchPage = (): JSX.Element => {
+const MultiSearch = (): JSX.Element => {
   const location = useLocation();
   const history = useHistory();
   const search = new URLSearchParams(location.search).get('search');
@@ -34,15 +37,6 @@ const SearchPage = (): JSX.Element => {
           setSearchMovie(movieToShow);
           setSearchTvShow(tvShowToShow);
           setSearchPeople(peopleToShow);
-          // setSearchMovie(searchMovie.concat(movieToShow).slice(0, 5));
-          // setSearchTvShow(searchTvShow.concat(tvShowToShow).slice(0, 5));
-          // setSearchPeople([...searchPeople, ...peopleToShow].slice(0, 5));
-          // if (
-          //   (movieToShow.length < 5 || tvShowToShow.length < 5 || peopleToShow.length < 5) &&
-          //   page < 2
-          // ) {
-          //   getSearchData(page + 1);
-          // }
         });
     },
     [search]
@@ -52,10 +46,10 @@ const SearchPage = (): JSX.Element => {
     getSearchData();
   }, [getSearchData]);
 
-  const setRoute = (path: string, search?: string): void => {
+  const setRoute = (path: string, type?: string): void => {
     history.push({
       pathname: path,
-      search: search || '',
+      search: `search=${search}&media_type=${type}` || '',
     });
   };
 
@@ -65,109 +59,132 @@ const SearchPage = (): JSX.Element => {
         Search: <strong>{search}</strong>
       </p>
       <div className="multi-search-container">
-        <div className="title">
-          <h3>People</h3>
-          <Button
-            variant="contained"
-            disabled={searchPeople.length > 0 ? false : true}
-            onClick={() => {
-              setRoute(ROUTES.GLOBAL_SEARCH, 'media_type=person');
-            }}
-          >
-            See more
-          </Button>
-        </div>
         {searchPeople.length > 0 ? (
-          searchPeople.map((person: IPerson) => (
-            <div key={person.id} className="data">
-              <div className="image-wrapper">
-                <img
-                  src={
-                    person.profile_path ? `${IMAGE_URL}${person.profile_path}` : PERSON_PLACEHOLDER
-                  }
-                  alt=""
-                />
-              </div>
-              <div className="search-item-info">
-                <a href="#">{person.name}</a>
-                <p>{person.known_for_department}</p>
-                <p></p>
-              </div>
+          <div>
+            <div className="title">
+              <h3>People</h3>
+              <Button
+                variant="contained"
+                disabled={searchPeople.length > 0 ? false : true}
+                onClick={() => {
+                  setRoute(ROUTES.MULTI_SEARCH_CATEGORY_PAGE_ROUTE, 'person');
+                }}
+              >
+                See more
+              </Button>
             </div>
-          ))
+            {searchPeople.map((person: IPerson) => (
+              <PersonItem
+                key={person.id}
+                id={person.id}
+                name={person.name}
+                profile_path={person.profile_path}
+                known_for_department={person.known_for_department}
+              />
+            ))}
+          </div>
         ) : (
-          <p className="empty-search-list">no people to show</p>
+          <div className="empty-search-list">
+            <p>
+              Nothing to show in <strong>People</strong>
+            </p>
+            <Button
+              variant="contained"
+              onClick={() => {
+                setRoute(ROUTES.MULTI_SEARCH_CATEGORY_PAGE_ROUTE, 'person');
+              }}
+            >
+              Try to search more
+            </Button>
+          </div>
         )}
       </div>
       <div className="multi-search-container">
-        <div className="title">
-          <h3>Movies</h3>
-          <Button
-            variant="contained"
-            disabled={searchMovie.length > 0 ? false : true}
-            onClick={() => {
-              setRoute(ROUTES.GLOBAL_SEARCH, 'media_type=movie');
-            }}
-          >
-            See more
-          </Button>
-        </div>
         {searchMovie.length > 0 ? (
-          searchMovie.map((movie: IMovie) => (
-            <div key={movie.id} className="data">
-              <div className="image-wrapper">
-                <img
-                  src={movie.poster_path ? `${IMAGE_URL}${movie.poster_path}` : PERSON_PLACEHOLDER}
-                  alt=""
-                />
-              </div>
-              <div className="search-item-info">
-                <a href="#">{movie.title}</a>
-                <p>{movie.release_date.slice(0, 4)}</p>
-                <p></p>
-              </div>
+          <div>
+            <div className="title">
+              <h3>Movies</h3>
+              <Button
+                variant="contained"
+                disabled={searchMovie.length > 0 ? false : true}
+                onClick={() => {
+                  setRoute(ROUTES.MULTI_SEARCH_CATEGORY_PAGE_ROUTE, 'movie');
+                }}
+              >
+                See more
+              </Button>
             </div>
-          ))
+            {searchMovie.map((movie: IMovie) => (
+              <MovieItem
+                key={movie.id}
+                id={movie.id}
+                title={movie.title}
+                poster_path={movie.poster_path}
+                release_date={movie.release_date}
+                overview={movie.overview}
+              />
+            ))}
+          </div>
         ) : (
-          <li className="empty-search-list">nothing to show</li>
+          <div className="empty-search-list">
+            <p>
+              Nothing to show in <strong>Movies</strong>
+            </p>
+            <Button
+              variant="contained"
+              onClick={() => {
+                setRoute(ROUTES.MULTI_SEARCH_CATEGORY_PAGE_ROUTE, 'movie');
+              }}
+            >
+              Try to search more
+            </Button>
+          </div>
         )}
       </div>
       <div className="multi-search-container">
-        <div className="title">
-          <h3>TvShows</h3>
-          <Button
-            variant="contained"
-            disabled={searchTvShow.length > 0 ? false : true}
-            onClick={() => {
-              setRoute(ROUTES.GLOBAL_SEARCH, 'media_type=tv');
-            }}
-          >
-            See more
-          </Button>
-        </div>
         {searchTvShow.length > 0 ? (
-          searchTvShow.map((tvShow: ITvShow) => (
-            <div key={tvShow.id} className="data">
-              <div className="image-wrapper">
-                <img
-                  src={
-                    tvShow.poster_path ? `${IMAGE_URL}${tvShow.poster_path}` : PERSON_PLACEHOLDER
-                  }
-                  alt=""
-                />
-              </div>
-              <div className="search-item-info">
-                <a href="#">{tvShow.name}</a>
-                <p>{tvShow.first_air_date.slice(0, 4)}</p>
-                <p></p>
-              </div>
+          <div>
+            <div className="title">
+              <h3>TvShows</h3>
+              <Button
+                variant="contained"
+                disabled={searchTvShow.length > 0 ? false : true}
+                onClick={() => {
+                  setRoute(ROUTES.MULTI_SEARCH_CATEGORY_PAGE_ROUTE, 'tv');
+                }}
+              >
+                See more
+              </Button>
             </div>
-          ))
+            {searchTvShow.map((tvShow: ITvShow) => (
+              <TvShowItem
+                key={tvShow.id}
+                id={tvShow.id}
+                name={tvShow.name}
+                poster_path={tvShow.poster_path}
+                first_air_date={tvShow.first_air_date}
+                overview={tvShow.overview}
+                number_of_seasons={tvShow.number_of_seasons}
+              />
+            ))}
+          </div>
         ) : (
-          <li className="empty-search-list">nothing to show</li>
+          <div className="empty-search-list">
+            <p>
+              Nothing to show in <strong>TvShows</strong>
+            </p>
+            <Button
+              variant="contained"
+              onClick={() => {
+                setRoute(ROUTES.MULTI_SEARCH_CATEGORY_PAGE_ROUTE, 'tv');
+              }}
+            >
+              Try to search more
+            </Button>
+          </div>
         )}
       </div>
     </section>
   );
 };
-export default SearchPage;
+export default MultiSearch;

@@ -18,10 +18,10 @@ function App(): JSX.Element {
             <Route exact path={ROUTES.HOME_ROUTE}>
               <Home />
             </Route>
-            <Route exact path={ROUTES.SEARCH_PAGE_ROUTE}>
+            <Route exact path={ROUTES.MULTI_SEARCH_PAGE_ROUTE}>
               <SearchPage />
             </Route>
-            <Route exact path={ROUTES.GLOBAL_SEARCH}>
+            <Route exact path={ROUTES.MULTI_SEARCH_CATEGORY_PAGE_ROUTE}>
               <GlobalSearch />
             </Route>
           </Switch>

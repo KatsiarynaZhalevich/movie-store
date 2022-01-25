@@ -15,15 +15,14 @@ export interface IToken {
 
 export interface IBaseMovie {
   id: number;
-  genre: string[] | number[];
+  genre?: string[] | number[];
   poster_path: string;
-  // release_date: string;
   overview: string;
-  media_type: string;
-  createdBy: string;
-  production_companies: string;
-  country: string;
-  vote_average: number[];
+  media_type?: string;
+  createdBy?: string;
+  production_companies?: string;
+  country?: string;
+  vote_average?: number[];
 }
 export interface IMovie extends IBaseMovie {
   title: string;
@@ -37,18 +36,17 @@ export interface ITvShow extends IBaseMovie {
 export interface IPerson {
   id: number;
   name: string;
-  birthday: string;
-  deathday: string;
-  biography: string;
-  place_of_birth: string;
+  birthday?: string;
+  deathday?: string;
+  biography?: string;
+  place_of_birth?: string;
   profile_path: string;
-  media_type: string;
+  media_type?: string;
   known_for_department: string;
-  popularity: number;
+  popularity?: number;
 }
 
 export interface IGenre {
   id: number;
   name: string;
 }
-

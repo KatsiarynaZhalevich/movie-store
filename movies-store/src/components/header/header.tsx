@@ -11,7 +11,7 @@ import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 // import MenuIcon from '@mui/icons-material/Menu';
 // // import Modal from 'react-modal';
 import './header.scss';
-import { FormControl, InputBase, Select } from '@mui/material';
+import { InputBase } from '@mui/material';
 import MenuElement from '../../elements/menu/menuElement';
 import { API_KEY, API_LINK, ROUTES } from '../../variables';
 import { IMovie, IPerson, ITvShow } from '../../interfaces';
@@ -69,7 +69,6 @@ const Header = (): JSX.Element => {
   const [searchTvShow, setSearchTvShow] = useState<ITvShow[]>([]);
   const [searchPeople, setSearchPeople] = useState<IPerson[]>([]);
   const history = useHistory();
-  const [searchCategory, setSearchCategory] = useState('Movie');
 
   const getSearchItem = (search: React.ChangeEvent<HTMLInputElement>) => {
     const newSearch = search.target.value;
@@ -108,7 +107,7 @@ const Header = (): JSX.Element => {
   };
 
   const setRoute = (path: string, search?: string): void => {
-    if (path === ROUTES.SEARCH_PAGE_ROUTE && searchValue.value.length > 2) {
+    if (path === ROUTES.MULTI_SEARCH_PAGE_ROUTE && searchValue.value.length > 2) {
       history.push({
         pathname: path,
         search: `search=${search}` || '',
@@ -120,16 +119,12 @@ const Header = (): JSX.Element => {
         search: search || '',
       });
     }
-    setSearchCategory('Movie');
   };
 
   const checkEnter = (event: React.KeyboardEvent<HTMLInputElement>): void => {
     if (event.key === 'Enter') {
-      setRoute(ROUTES.SEARCH_PAGE_ROUTE, searchValue.value);
+      setRoute(ROUTES.MULTI_SEARCH_PAGE_ROUTE, searchValue.value);
     }
-  };
-  const changeSearchCategory = (event: any) => {
-    setSearchCategory(event.target.value as string);
   };
 
   return (
@@ -146,7 +141,6 @@ const Header = (): JSX.Element => {
           </MenuItem>
           <MenuItem sx={menuItemStyle}>Movies</MenuItem>
           <MenuItem sx={menuItemStyle}>TvShows</MenuItem>
-          <MenuItem sx={menuItemStyle}>People</MenuItem>
         </MenuElement>
         <h2
           onClick={() => {
@@ -157,23 +151,7 @@ const Header = (): JSX.Element => {
         </h2>
       </div>
       <div className="right-part">
-        {/* <h3>Search in</h3>/ */}
         <div className="search-field">
-          <FormControl>
-            <Select
-              className="category"
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={searchCategory}
-              onChange={changeSearchCategory}
-            >
-              <MenuItem value="Movie" selected>
-                Movie
-              </MenuItem>
-              <MenuItem value="TvShow">TvShow</MenuItem>
-              <MenuItem value="Person">Person</MenuItem>
-            </Select>
-          </FormControl>
           <Search className="search" onBlur={closeSearch}>
             <IconButton
               type="submit"
@@ -181,13 +159,13 @@ const Header = (): JSX.Element => {
               aria-label="search"
               color="inherit"
               onClick={() => {
-                setRoute(ROUTES.SEARCH_PAGE_ROUTE, searchValue.value);
+                setRoute(ROUTES.MULTI_SEARCH_PAGE_ROUTE, searchValue.value);
               }}
             >
               <SearchIcon />
             </IconButton>
             <StyledInputBase
-              placeholder={`Search in ${searchCategory}`}
+              placeholder="Search..."
               inputProps={{ 'aria-label': 'search' }}
               onChange={getSearchItem}
               onKeyPress={checkEnter}
