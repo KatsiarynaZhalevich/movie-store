@@ -9,7 +9,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 // import BookmarkIcon from '@mui/icons-material/Bookmark';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 // import MenuIcon from '@mui/icons-material/Menu';
-// // import Modal from 'react-modal';
+import Modal from 'react-modal';
+import CloseIcon from '@mui/icons-material/Close';
 import './header.scss';
 import { InputBase } from '@mui/material';
 import MenuElement from '../../elements/menu/menuElement';
@@ -17,6 +18,8 @@ import { API_KEY, API_LINK, ROUTES } from '../../variables';
 import { IMovie, IPerson, ITvShow } from '../../interfaces';
 import { takeFirstFive } from '../../utils/utils';
 import { useHistory } from 'react-router-dom';
+import SignIn from '../signIn/signIn';
+import SignUp from '../signUp/signUp';
 
 //      START SEARCH SETTINGS          //
 const Search = styled('div')(({ theme }) => ({
@@ -60,6 +63,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 //     END SEARCH SETTINGS   ///
 
+Modal.setAppElement('#root');
+
 const Header = (): JSX.Element => {
   const [searchValue, setSearchValue] = useState({
     value: '',
@@ -69,7 +74,10 @@ const Header = (): JSX.Element => {
   const [searchTvShow, setSearchTvShow] = useState<ITvShow[]>([]);
   const [searchPeople, setSearchPeople] = useState<IPerson[]>([]);
   const history = useHistory();
+  const [modalIsOpen, setModalIsOpen] = useState({ signIn: false, signUp: false });
+  // const [isLoged, setIsloged] = useState(false);
 
+  //         search methods               //
   const getSearchItem = (search: React.ChangeEvent<HTMLInputElement>) => {
     const newSearch = search.target.value;
     setSearchValue({
@@ -106,24 +114,51 @@ const Header = (): JSX.Element => {
     setSearchValue({ ...searchValue, show: false });
   };
 
-  const setRoute = (path: string, search?: string): void => {
-    if (path === ROUTES.MULTI_SEARCH_PAGE_ROUTE && searchValue.value.length > 2) {
-      history.push({
-        pathname: path,
-        search: `search=${search}` || '',
-      });
-      setSearchValue({ value: '', show: false });
-    } else {
-      history.push({
-        pathname: path,
-        search: search || '',
-      });
-    }
-  };
-
   const checkEnter = (event: React.KeyboardEvent<HTMLInputElement>): void => {
     if (event.key === 'Enter') {
       setRoute(ROUTES.MULTI_SEARCH_PAGE_ROUTE, searchValue.value);
+    }
+  };
+  //         end search methods               //
+
+  //         modals methods               //
+  const closeModal = () => {
+    setModalIsOpen({ signIn: false, signUp: false });
+  };
+
+  const openSignInModal = () => {
+    setModalIsOpen({ ...modalIsOpen, signIn: true });
+  };
+
+  const openSignUpModal = () => {
+    setModalIsOpen({ ...modalIsOpen, signUp: true });
+  };
+
+  //         end modals methods               //
+
+  const setRoute = (path: string, search?: string, type?: string): void => {
+    switch (path) {
+      case ROUTES.MULTI_SEARCH_PAGE_ROUTE:
+        if (searchValue.value.length > 2) {
+          history.push({
+            pathname: path,
+            search: `search=${search}` || '',
+          });
+          setSearchValue({ value: '', show: false });
+        }
+        break;
+      case ROUTES.SEARCH_PAGE_ROUTE:
+        history.push({
+          pathname: path,
+          search: `media_type=${type}`,
+        });
+        break;
+      default:
+        history.push({
+          pathname: path,
+          search: `search=${search}&media_type=${type}` || '',
+        });
+        break;
     }
   };
 
@@ -139,8 +174,18 @@ const Header = (): JSX.Element => {
           >
             Home
           </MenuItem>
-          <MenuItem sx={menuItemStyle}>Movies</MenuItem>
-          <MenuItem sx={menuItemStyle}>TvShows</MenuItem>
+          <MenuItem
+            sx={menuItemStyle}
+            onClick={() => setRoute(ROUTES.SEARCH_PAGE_ROUTE, '', 'movie')}
+          >
+            Movies
+          </MenuItem>
+          <MenuItem
+            sx={menuItemStyle}
+            onClick={() => setRoute(ROUTES.SEARCH_PAGE_ROUTE, '', 'tvShow')}
+          >
+            TvShows
+          </MenuItem>
         </MenuElement>
         <h2
           onClick={() => {
@@ -219,10 +264,36 @@ const Header = (): JSX.Element => {
           </IconButton>
           <MenuElement title={<AccountCircleRoundedIcon className="icon" />}>
             <MenuItem sx={profileMenuItemStyle}>Profile</MenuItem>
-            <MenuItem sx={profileMenuItemStyle}>SignIn</MenuItem>
-            <MenuItem sx={profileMenuItemStyle}>SignUp</MenuItem>
+            <MenuItem sx={profileMenuItemStyle} onClick={openSignInModal}>
+              SignIn
+            </MenuItem>
+            <MenuItem sx={profileMenuItemStyle} onClick={openSignUpModal}>
+              SignUp
+            </MenuItem>
             <MenuItem sx={profileMenuItemStyle}>LogOut</MenuItem>
           </MenuElement>
+          <Modal
+            onRequestClose={closeModal}
+            overlayClassName="overlay"
+            className="modal singIn-modal"
+            isOpen={modalIsOpen.signIn}
+          >
+            <h1>SignIn</h1>
+            <CloseIcon onClick={closeModal} className="close" />
+            <SignIn closeModal={closeModal} />
+            {/* <SignIn setRoute={route} closeModal={closeModal} /> */}
+          </Modal>
+          <Modal
+            onRequestClose={closeModal}
+            overlayClassName="overlay"
+            className="modal singUp-modal"
+            isOpen={modalIsOpen.signUp}
+          >
+            <h1>SignUp</h1>
+            <CloseIcon className="close" />
+            <SignUp closeModal={closeModal} />
+            {/* <SignUp setRoute={route} closeModal={closeModal} /> */}
+          </Modal>
         </div>
       </div>
     </header>

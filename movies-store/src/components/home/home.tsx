@@ -49,7 +49,6 @@ const Home = (): JSX.Element => {
     getTrendTvShows();
     getTrendPeople();
   }, []);
-
   return (
     <section className="content home">
       <div className="section-item">

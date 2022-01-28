@@ -35,6 +35,7 @@ const MenuElement = ({ children, title }: Props): JSX.Element => {
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
+        onClick={handleClose}
         MenuListProps={{
           'aria-labelledby': 'basic-button',
         }}

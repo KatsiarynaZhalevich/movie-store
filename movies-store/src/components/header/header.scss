@@ -38,7 +38,7 @@
         color: $color-lightGrey-secondary;
       }
       fieldset {
-        border: none
+        border: none;
       }
     }
     .search-field {
@@ -47,6 +47,8 @@
     .search {
       position: relative;
       margin-left: 10px;
+      height: 20px;
+      padding: 15px;
       input {
         padding-left: 0;
       }
@@ -58,7 +60,7 @@
           list-style-type: none;
           text-align: left;
           padding: 0;
-          background-color: $color-white;   
+          background-color: $color-white;
           width: 235px;
           li {
             button {
@@ -70,8 +72,8 @@
               background-color: $color-white;
               font-size: 14px;
               padding: 10px;
-              &:last-child{
-                  margin-bottom: 0;
+              &:last-child {
+                margin-bottom: 0;
               }
               &:hover {
                 background-color: $color-lightGrey;
@@ -86,8 +88,8 @@
           }
         }
         .empty-search-list {
-            color: $color-grey;
-            padding: 5px;
+          color: $color-grey;
+          padding: 5px;
         }
       }
     }
@@ -104,5 +106,65 @@
         }
       }
     }
+  }
+}
+// modal
+.overlay {
+  background-color: rgba(0, 0, 0, 0.8);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+}
+
+.modal {
+  position: absolute;
+  inset: 40px;
+  border: 1px solid rgb(204, 204, 204);
+  background: rgb(255, 255, 255);
+  border-radius: 4px;
+  outline: none;
+  padding: 15px;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  top: 50%;
+  left: 50%;
+  margin-top: -150px;
+  margin-left: -150px;
+
+  &.singIn-modal {
+    height: 300px;
+  }
+  &.singUp-modal {
+    height: 380px;
+    margin-top: -210px;
+    .password + .password {
+      &>div {
+        margin-bottom: 30px;
+      }
+    }
+  }
+  &.addGame-modal {
+    margin-top: -360px;
+    height: 690px;
+    width: 350px;
+  }
+  .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    align-self: flex-end;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+  h1 {
+    color: $color-orange;
+    margin-bottom: 20px;
   }
 }

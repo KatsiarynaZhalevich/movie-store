@@ -1,0 +1,12 @@
+[
+  {
+    "username": "name",
+    "password": "qq11",
+    "id": 1,
+    "favorites": [],
+    "role": "admin",
+    "phone": "1234556000"
+  },
+  { "username": "qqqqq", "password": "qq1", "id": 5, "favorites": [] },
+  { "username": "new", "password": "eee3", "id": 6, "favorites": [] }
+]

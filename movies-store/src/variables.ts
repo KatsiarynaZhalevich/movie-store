@@ -9,5 +9,6 @@ export const POSTER_PLACEHOLDER =
 export const ROUTES = {
   HOME_ROUTE: '/',
   MULTI_SEARCH_PAGE_ROUTE: '/multi-search',
-  MULTI_SEARCH_CATEGORY_PAGE_ROUTE: '/global-search',
+  MULTI_SEARCH_CATEGORY_PAGE_ROUTE: '/multi-search-category',
+  SEARCH_PAGE_ROUTE: '/search',
 };
