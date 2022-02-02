@@ -9,6 +9,32 @@ export const updateUsersData = (users: IUser[]): void => {
   fs.writeFileSync('users.json', JSON.stringify(users));
 };
 
+export const getUserByToken = (token: number): IUser | undefined => {
+  const tokens = getTokens();
+  const users = getUsers();
+  const item = tokens.find((data) => data.token === token);
+
+  if (!item) {
+    throw new Error('unauthorized user');
+  }
+  return users.find((data) => data.id === item.userId);
+};
+
+export const getUser = (id: IUser['id']): IUser => {
+  const users = getUsers();
+  const user = users.find((data) => data.id === id);
+  if (!user) {
+    throw new Error('No user found');
+  }
+  return user;
+};
+
+export const saveUser = (user: IUser): void => {
+  const users = getUsers();
+  const updatedUsers = users.map((data) => (data.id !== user.id ? data : user));
+  fs.writeFileSync('users.json', JSON.stringify(updatedUsers));
+};
+
 //             end users methods               //
 
 //             token methods               //
@@ -41,11 +67,43 @@ export const deleteToken = (token: string): void => {
 
 //             end token methods               //
 
-// export const getUser = (id: IUser['id']): IUser => {
-//   const users = getUsers();
-//   const user = users.find((data) => data.id === id);
-//   if (!user) {
-//     throw new Error('No user found');
-//   }
-//   return user;
-// };
+//             favorites methods               //
+
+export const addFavoriteItem = (userId: IUser['id'], id: number, type: string) => {
+  const users = getUsers();
+  let updatedUser!: IUser;
+
+  const updatedUsers: IUser[] = users.map((user: IUser) => {
+    if (user.id === userId) {
+      type === 'movie' ? user.favorites.movie.push(id) : user.favorites.tvShow?.push(id);
+      updatedUser = user;
+    }
+    return user;
+  });
+  if (!updatedUser) {
+    throw new Error('No user found');
+  }
+  updateUsersData(updatedUsers);
+  return updatedUser;
+};
+
+export const deleteFavoriteItem = (userId: IUser['id'], id: number, type: string) => {
+  const users = getUsers();
+
+  let updatedUser!: IUser;
+  const updatedUsers: IUser[] = users.map((user: IUser) => {
+    if (user.id === userId) {
+      type === 'movie'
+        ? (user.favorites.movie = user.favorites.movie.filter((movie: number) => movie !== id))
+        : (user.favorites.tvShow = user.favorites.tvShow.filter((tvShow: number) => tvShow !== id));
+      updatedUser = user;
+    }
+    return user;
+  });
+  if (!updatedUser) {
+    throw new Error('No user found');
+  }
+  updateUsersData(updatedUsers);
+  return updatedUser;
+};
+//             end favorites methods               //

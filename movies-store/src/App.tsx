@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import './App.css';
 import Footer from './components/footer/footer';
 import Header from './components/header/header';
@@ -8,8 +8,38 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import MultiSearch from './components/multiSearch/multiSearch';
 import MultiSearchCategory from './components/multiSearchCategory/multiSearchCategory';
 import Search from './components/search/search';
+import { useDispatch } from 'react-redux';
+import { authAction } from './redux/actions';
+import { CircularProgress } from '@mui/material';
 
 function App(): JSX.Element {
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const token = JSON.parse(window.localStorage.getItem('token') || '{}');
+    if (JSON.stringify(token) !== '{}') {
+      setLoading(true);
+      fetch('http://localhost:8081/api/auth/getUser', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token }),
+      })
+        .then((response) => response.json())
+        .then((response) => {
+          dispatch(authAction(response));
+        })
+        .finally(() => setLoading(false));
+    } else {
+      setLoading(false);
+    }
+  }, [dispatch]);
+
+  if (loading) {
+    return <CircularProgress />;
+  }
   return (
     <div className="App">
       <Router>

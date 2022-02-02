@@ -8,9 +8,15 @@ type Props = {
   typeModal: string;
   typePass: string;
   setPasswordValue: (value: string, error: string) => void;
+  checkEnter: () => void;
 };
 
-const PasswordInput = ({ typeModal, typePass, setPasswordValue }: Props): JSX.Element => {
+const PasswordInput = ({
+  typeModal,
+  typePass,
+  setPasswordValue,
+  checkEnter,
+}: Props): JSX.Element => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
@@ -26,6 +32,12 @@ const PasswordInput = ({ typeModal, typePass, setPasswordValue }: Props): JSX.El
       setError(errorRes);
     }
     setPasswordValue(event.target.value, errorRes);
+  };
+
+  const checkKeyCode = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      checkEnter();
+    }
   };
 
   return (
@@ -50,6 +62,7 @@ const PasswordInput = ({ typeModal, typePass, setPasswordValue }: Props): JSX.El
           type={showPassword ? 'text' : 'password'}
           value={password}
           onChange={changePasswordValue}
+          onKeyPress={checkKeyCode}
           endAdornment={
             <InputAdornment position="end">
               <IconButton

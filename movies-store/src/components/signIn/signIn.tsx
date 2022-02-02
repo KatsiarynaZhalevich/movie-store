@@ -3,6 +3,8 @@ import UserNameInput from '../../elements/userNameInput/userNameInput';
 import PasswordInput from '../../elements/passwordInput/passwordInput';
 import { Button } from '@mui/material';
 import './signIn.scss';
+import { useDispatch } from 'react-redux';
+import { authAction } from '../../redux/actions';
 
 type Props = {
   closeModal: () => void;
@@ -12,6 +14,7 @@ const SignIn = ({ closeModal }: Props): JSX.Element => {
   const [username, setUsername] = useState('');
   const [password, setSetPassword] = useState('');
   const [serverError, setServerError] = useState('');
+  const dispatch = useDispatch();
 
   const setPasswordValue = (value: string) => {
     setSetPassword(value);
@@ -19,8 +22,13 @@ const SignIn = ({ closeModal }: Props): JSX.Element => {
   const setUsernameValue = (value: string) => {
     setUsername(value);
   };
+  const checkEnter = (): void => {
+    if (username !== '' && password !== '') {
+      submitForm();
+    }
+  };
 
-  const submitForm = async (event: any) => {
+  const submitForm = async () => {
     const user = { username, password };
     try {
       await fetch('http://localhost:8081/api/auth/signIn', {
@@ -34,8 +42,6 @@ const SignIn = ({ closeModal }: Props): JSX.Element => {
           switch (response.status) {
             case 400:
               setServerError('Incorrect username or password');
-              // event.preventDefault();
-              // return false;
               break;
             default:
               break;
@@ -44,21 +50,28 @@ const SignIn = ({ closeModal }: Props): JSX.Element => {
         })
         .then((response) => {
           window.localStorage.setItem('token', response.token);
-          // dispatch(authAction(response.user));
+          dispatch(authAction(response.user));
           // history.push(route);
-          console.log('tre');
           closeModal();
         });
     } catch (error) {
       console.log(error);
     }
   };
-  console.log(serverError);
 
   return (
     <form className="signIn">
-      <UserNameInput setUsernameValue={setUsernameValue} typeModal="signIn" />
-      <PasswordInput setPasswordValue={setPasswordValue} typeModal="signIn" typePass="password" />
+      <UserNameInput
+        setUsernameValue={setUsernameValue}
+        typeModal="signIn"
+        checkEnter={checkEnter}
+      />
+      <PasswordInput
+        setPasswordValue={setPasswordValue}
+        typeModal="signIn"
+        typePass="password"
+        checkEnter={checkEnter}
+      />
       <Button
         className="submit"
         type="button"

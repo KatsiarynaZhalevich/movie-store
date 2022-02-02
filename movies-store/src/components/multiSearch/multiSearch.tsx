@@ -121,6 +121,7 @@ const MultiSearch = (): JSX.Element => {
                 poster_path={movie.poster_path}
                 release_date={movie.release_date}
                 overview={movie.overview}
+                media_type="movie"
               />
             ))}
           </div>
@@ -149,7 +150,7 @@ const MultiSearch = (): JSX.Element => {
                 variant="contained"
                 disabled={searchTvShow.length > 0 ? false : true}
                 onClick={() => {
-                  setRoute(ROUTES.MULTI_SEARCH_CATEGORY_PAGE_ROUTE, 'tv');
+                  setRoute(ROUTES.MULTI_SEARCH_CATEGORY_PAGE_ROUTE, 'tvShow');
                 }}
               >
                 See more
@@ -164,6 +165,7 @@ const MultiSearch = (): JSX.Element => {
                 first_air_date={tvShow.first_air_date}
                 overview={tvShow.overview}
                 number_of_seasons={tvShow.number_of_seasons}
+                media_type="tvShow"
               />
             ))}
           </div>

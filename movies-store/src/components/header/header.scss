@@ -56,12 +56,15 @@
         position: absolute;
         border: 1px solid $color-grey;
         border-radius: 4px;
+        z-index: 10;
+        top: 50px;
+    left: 0;
         .search-items {
           list-style-type: none;
           text-align: left;
           padding: 0;
           background-color: $color-white;
-          width: 235px;
+          width: 265px;
           li {
             button {
               width: 100%;

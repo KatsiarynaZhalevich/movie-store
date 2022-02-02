@@ -4,8 +4,6 @@ import { IMAGE_URL, PERSON_PLACEHOLDER } from '../../variables';
 
 /* eslint-disable*/
 const PersonItem = ({ id, name, profile_path, known_for_department }: IPerson): JSX.Element => {
-  console.log(name);
-  
   return (
     
       <div key={id} className="result-item">

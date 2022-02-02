@@ -4,6 +4,8 @@ import PasswordInput from '../../elements/passwordInput/passwordInput';
 import { Button } from '@mui/material';
 import './signUp.scss';
 import { checkConfirm } from '../../utils/formValidation';
+import { useDispatch } from 'react-redux';
+import { authAction } from '../../redux/actions';
 
 type Props = {
   closeModal: () => void;
@@ -19,6 +21,7 @@ const SignUp = ({ closeModal }: Props): JSX.Element => {
     usernameError: '',
     passwordError: '',
   });
+  const dispatch = useDispatch();
 
   const setUsernameValue = (value: string, error?: string) => {
     setUsername(value);
@@ -36,9 +39,20 @@ const SignUp = ({ closeModal }: Props): JSX.Element => {
     const confirmErr = checkConfirm(password, value);
     setConfirmError(confirmErr);
   };
+  const checkEnter = (): void => {
+    if (
+      username !== '' &&
+      password !== '' &&
+      confirmPassword !== '' &&
+      errors.passwordError === '' &&
+      errors.usernameError === '' &&
+      confirmError === ''
+    ) {
+      submitForm();
+    }
+  };
 
   const submitForm = async () => {
-    console.log(serverError);
     const newUser = { username, password };
     try {
       await fetch('http://localhost:8081/api/auth/signUp', {
@@ -52,7 +66,6 @@ const SignUp = ({ closeModal }: Props): JSX.Element => {
           switch (response.status) {
             case 400:
               setServerError('this username is unavailable');
-              return;
               break;
             default:
               break;
@@ -62,7 +75,7 @@ const SignUp = ({ closeModal }: Props): JSX.Element => {
         .then((response) => {
           if (response) {
             window.localStorage.setItem('token', response.token);
-            // dispatch(authAction(response.newUser));
+            dispatch(authAction(response.newUser));
             // history.push(routers.PROFILE_ROUTE);
             closeModal();
           }
@@ -74,12 +87,22 @@ const SignUp = ({ closeModal }: Props): JSX.Element => {
 
   return (
     <form className="signIn">
-      <UserNameInput setUsernameValue={setUsernameValue} typeModal="signUp" />
-      <PasswordInput setPasswordValue={setPasswordValue} typeModal="signUp" typePass="password" />
+      <UserNameInput
+        setUsernameValue={setUsernameValue}
+        typeModal="signUp"
+        checkEnter={checkEnter}
+      />
+      <PasswordInput
+        setPasswordValue={setPasswordValue}
+        typeModal="signUp"
+        typePass="password"
+        checkEnter={checkEnter}
+      />
       <PasswordInput
         setPasswordValue={setConfirmPasswordValue}
         typeModal="signUp"
         typePass="confirmPassword"
+        checkEnter={checkEnter}
       />
       {confirmError ? <p className="error -confirm">{confirmError}</p> : null}
       <Button
@@ -90,7 +113,9 @@ const SignUp = ({ closeModal }: Props): JSX.Element => {
           username === '' ||
           password === '' ||
           confirmPassword === '' ||
-          errors.passwordError !== ''
+          errors.passwordError !== '' ||
+          errors.usernameError !== '' ||
+          confirmError !== ''
         }
         sx={{
           backgroundColor: '#ff6600',

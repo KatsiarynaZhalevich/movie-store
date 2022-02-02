@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { styled, alpha } from '@mui/material/styles';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
-// import NoAccountsIcon from '@mui/icons-material/NoAccounts';
+import NoAccountsIcon from '@mui/icons-material/NoAccounts';
 import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import MenuItem from '@mui/material/MenuItem';
 import MenuIcon from '@mui/icons-material/Menu';
-// import BookmarkIcon from '@mui/icons-material/Bookmark';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 // import MenuIcon from '@mui/icons-material/Menu';
 import Modal from 'react-modal';
@@ -15,11 +15,14 @@ import './header.scss';
 import { InputBase } from '@mui/material';
 import MenuElement from '../../elements/menu/menuElement';
 import { API_KEY, API_LINK, ROUTES } from '../../variables';
-import { IMovie, IPerson, ITvShow } from '../../interfaces';
+import { IMovie, IPerson, ITvShow, IUser } from '../../interfaces';
 import { takeFirstFive } from '../../utils/utils';
 import { useHistory } from 'react-router-dom';
 import SignIn from '../signIn/signIn';
 import SignUp from '../signUp/signUp';
+import { useDispatch, useSelector } from 'react-redux';
+import getUser from '../../redux/selectors';
+import { authAction } from '../../redux/actions';
 
 //      START SEARCH SETTINGS          //
 const Search = styled('div')(({ theme }) => ({
@@ -75,7 +78,8 @@ const Header = (): JSX.Element => {
   const [searchPeople, setSearchPeople] = useState<IPerson[]>([]);
   const history = useHistory();
   const [modalIsOpen, setModalIsOpen] = useState({ signIn: false, signUp: false });
-  // const [isLoged, setIsloged] = useState(false);
+  const dispatch = useDispatch();
+  const user: IUser | null = useSelector(getUser);
 
   //         search methods               //
   const getSearchItem = (search: React.ChangeEvent<HTMLInputElement>) => {
@@ -119,6 +123,7 @@ const Header = (): JSX.Element => {
       setRoute(ROUTES.MULTI_SEARCH_PAGE_ROUTE, searchValue.value);
     }
   };
+
   //         end search methods               //
 
   //         modals methods               //
@@ -153,6 +158,12 @@ const Header = (): JSX.Element => {
           search: `media_type=${type}`,
         });
         break;
+      case ROUTES.HOME_ROUTE:
+        history.push({
+          pathname: path,
+          search: '',
+        });
+        break;
       default:
         history.push({
           pathname: path,
@@ -162,6 +173,30 @@ const Header = (): JSX.Element => {
     }
   };
 
+  const signOut = async () => {
+    const token = window.localStorage.getItem('token');
+
+    try {
+      const response = await fetch(`http://localhost:8081/api/auth/signOut`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token }),
+      });
+      switch (response.status) {
+        case 200:
+          history.push(ROUTES.HOME_ROUTE);
+          window.localStorage.removeItem('token');
+          dispatch(authAction(null));
+          break;
+        default:
+          break;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <header className="header">
       <div className="left-part">
@@ -259,18 +294,41 @@ const Header = (): JSX.Element => {
           </Search>
         </div>
         <div className="iconWrapper">
-          <IconButton size="large" aria-label="search" color="inherit">
-            <BookmarkBorderIcon className="icon" />
-          </IconButton>
-          <MenuElement title={<AccountCircleRoundedIcon className="icon" />}>
-            <MenuItem sx={profileMenuItemStyle}>Profile</MenuItem>
-            <MenuItem sx={profileMenuItemStyle} onClick={openSignInModal}>
-              SignIn
-            </MenuItem>
-            <MenuItem sx={profileMenuItemStyle} onClick={openSignUpModal}>
-              SignUp
-            </MenuItem>
-            <MenuItem sx={profileMenuItemStyle}>LogOut</MenuItem>
+          {!user ? null : user.favorites.movie.length === 0 &&
+            user.favorites.tvShow.length === 0 ? (
+            <IconButton size="large" aria-label="search" color="inherit">
+              <BookmarkBorderIcon className="icon" />
+            </IconButton>
+          ) : (
+            <IconButton size="large" aria-label="search" color="inherit">
+              <BookmarkIcon className="icon" />
+            </IconButton>
+          )}
+          <MenuElement
+            title={
+              user ? (
+                <AccountCircleRoundedIcon className="icon" />
+              ) : (
+                <NoAccountsIcon className="icon" />
+              )
+            }
+          >
+            {user ? (
+              <MenuItem sx={profileMenuItemStyle}>Profile</MenuItem>
+            ) : (
+              <MenuItem sx={profileMenuItemStyle} onClick={openSignInModal}>
+                SignIn
+              </MenuItem>
+            )}
+            {user ? (
+              <MenuItem sx={profileMenuItemStyle} onClick={signOut}>
+                SignOut
+              </MenuItem>
+            ) : (
+              <MenuItem sx={profileMenuItemStyle} onClick={openSignUpModal}>
+                SignUp
+              </MenuItem>
+            )}
           </MenuElement>
           <Modal
             onRequestClose={closeModal}

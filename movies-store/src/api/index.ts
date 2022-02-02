@@ -1,7 +1,17 @@
 import express, { Request, Response } from 'express';
 import CORS from 'cors';
 import { IUser } from '../interfaces';
-import { createToken, getUsers, updateUsersData } from './utils';
+import {
+  addFavoriteItem,
+  createToken,
+  deleteFavoriteItem,
+  deleteToken,
+  // getUser,
+  getUserByToken,
+  getUsers,
+  saveUser,
+  updateUsersData,
+} from './utils';
 
 const port = 8081;
 const app = express();
@@ -23,7 +33,6 @@ app.post('/api/auth/signIn', (req: Request, res: Response) => {
   const user = users.find(
     (data) => data.username === req.body.username && data.password === req.body.password
   );
-  console.log('user', user);
   if (user) {
     const token = createToken(user.id);
     res.send(JSON.stringify({ user, token }));
@@ -32,18 +41,43 @@ app.post('/api/auth/signIn', (req: Request, res: Response) => {
 
 app.post('/api/auth/signUp', (req: Request, res: Response) => {
   const users = getUsers();
-  console.log(' up req.body', req.body);
   const candidate = users.find((item) => item.username === req.body.username);
-  console.log('candidate', candidate);
+
   if (!candidate) {
-    console.log('000');
     const { id } = users[users.length - 1];
     const newUser: IUser = req.body;
     newUser.id = id + 1;
-    newUser.favorites = [];
+    newUser.favorites.movie = [];
+    newUser.favorites.tvShow = [];
     const token = createToken(newUser.id);
     res.send({ newUser, token });
     users.push(newUser);
     updateUsersData(users);
   } else res.sendStatus(400);
+});
+
+app.post('/api/auth/signOut', (req: Request, res: Response) => {
+  if (req.body.token) {
+    deleteToken(req.body.token);
+    res.sendStatus(200);
+    return;
+  }
+  res.sendStatus(400);
+});
+
+app.post('/api/auth/getUser', (req: Request, res: Response) => {
+  const user = getUserByToken(req.body.token);
+  res.send(user);
+});
+
+app.post('/api/addToFavorites', (req: Request, res: Response) => {
+  const updatedUser = addFavoriteItem(req.body.userId, +req.body.id, req.body.mediaType);
+  saveUser(updatedUser);
+  res.send(updatedUser.favorites);
+});
+
+app.post('/api/deleteFromFavorites', (req: Request, res: Response) => {
+  const updatedUser = deleteFavoriteItem(req.body.userId, +req.body.id, req.body.mediaType);
+  saveUser(updatedUser);
+  res.send(updatedUser.favorites);
 });

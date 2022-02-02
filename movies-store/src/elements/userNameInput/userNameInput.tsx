@@ -7,9 +7,10 @@ import { checkName } from '../../utils/formValidation';
 type Props = {
   typeModal: string;
   setUsernameValue: (value: string, error: string) => void;
+  checkEnter: () => void;
 };
 
-const UserNameInput = ({ typeModal, setUsernameValue }: Props): JSX.Element => {
+const UserNameInput = ({ typeModal, setUsernameValue, checkEnter }: Props): JSX.Element => {
   const [username, setUsername] = useState('');
   const [error, setError] = useState('');
 
@@ -21,6 +22,12 @@ const UserNameInput = ({ typeModal, setUsernameValue }: Props): JSX.Element => {
       setError(errorRes);
     }
     setUsernameValue(event.target.value, errorRes);
+  };
+
+  const checkKeyCode = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      checkEnter();
+    }
   };
 
   return (
@@ -44,6 +51,7 @@ const UserNameInput = ({ typeModal, setUsernameValue }: Props): JSX.Element => {
           id="outlined-adornment-username"
           value={username}
           onChange={changeValue}
+          onKeyPress={checkKeyCode}
           label="username"
           endAdornment={
             <InputAdornment position="end">

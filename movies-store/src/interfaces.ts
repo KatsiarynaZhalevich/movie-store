@@ -5,9 +5,13 @@ export interface IUser {
   role: string;
   phone?: string;
   token?: number;
-  favorites: number[];
+  favorites: IFavorites;
 }
 
+export interface IFavorites {
+  movie: number[];
+  tvShow: number[];
+}
 export interface IToken {
   token: number;
   userId: number;
