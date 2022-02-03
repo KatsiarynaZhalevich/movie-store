@@ -1,5 +1,4 @@
 import fs from 'fs';
-
 import { IUser, IToken } from '../interfaces';
 
 //             users methods               //

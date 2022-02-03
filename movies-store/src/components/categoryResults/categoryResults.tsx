@@ -11,7 +11,13 @@ import {
 } from '@mui/material';
 import './categoryResults.scss';
 import { useHistory, useLocation } from 'react-router-dom';
-import { API_KEY, API_LINK, IMAGE_URL, PERSON_PLACEHOLDER, POSTER_PLACEHOLDER } from '../../variables';
+import {
+  API_KEY,
+  API_LINK,
+  IMAGE_URL,
+  PERSON_PLACEHOLDER,
+  POSTER_PLACEHOLDER,
+} from '../../variables';
 import { IMovie, ITvShow, IPerson, IGenre } from '../../interfaces';
 
 type Year = {
@@ -423,4 +429,4 @@ const CategoryResults = (): JSX.Element => {
     </div>
   );
 };
-export default CategoryResults;
+// export default CategoryResults;

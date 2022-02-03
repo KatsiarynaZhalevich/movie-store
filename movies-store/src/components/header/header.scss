@@ -7,6 +7,9 @@
   align-items: center;
   padding-left: 20px;
   justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 
   .left-part {
     display: flex;
@@ -58,7 +61,7 @@
         border-radius: 4px;
         z-index: 10;
         top: 50px;
-    left: 0;
+        left: 0;
         .search-items {
           list-style-type: none;
           text-align: left;
@@ -146,7 +149,7 @@
     height: 380px;
     margin-top: -210px;
     .password + .password {
-      &>div {
+      & > div {
         margin-bottom: 30px;
       }
     }

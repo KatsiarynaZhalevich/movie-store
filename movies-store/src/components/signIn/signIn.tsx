@@ -51,7 +51,6 @@ const SignIn = ({ closeModal }: Props): JSX.Element => {
         .then((response) => {
           window.localStorage.setItem('token', response.token);
           dispatch(authAction(response.user));
-          // history.push(route);
           closeModal();
         });
     } catch (error) {

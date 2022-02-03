@@ -24,7 +24,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import getUser from '../../redux/selectors';
 import { authAction } from '../../redux/actions';
 
-//      START SEARCH SETTINGS          //
+//      start search settings          //
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
@@ -64,7 +64,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
   },
 }));
-//     END SEARCH SETTINGS   ///
+//     end search settings   ///
 
 Modal.setAppElement('#root');
 
