@@ -2,7 +2,6 @@ export interface IUser {
   id: number;
   username: string;
   password: string;
-  role: string;
   phone?: string;
   token?: number;
   favorites: IFavorites;

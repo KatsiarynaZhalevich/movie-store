@@ -3,6 +3,8 @@ import './App.css';
 import Footer from './components/footer/footer';
 import Header from './components/header/header';
 import Home from './components/home/home';
+import Profile from './components/profile/profile';
+import ProtectedRoute from './components/protectedRoute/protectedRoute';
 import { ROUTES } from './variables';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import MultiSearch from './components/multiSearch/multiSearch';
@@ -57,6 +59,11 @@ function App(): JSX.Element {
             </Route>
             <Route exact path={ROUTES.SEARCH_PAGE_ROUTE}>
               <Search />
+            </Route>
+            <Route exact path={ROUTES.PROFILE_PAGE}>
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
             </Route>
           </Switch>
         </Suspense>

@@ -1,0 +1,52 @@
+@import '../../styles/variables';
+
+.-profile {
+  padding-top: 50px;
+  .profile-container {
+    padding: 20px;
+    width: 50%;
+    margin: auto;
+    background-color: $color-lightGrey;
+    border-radius: 4px;
+    min-height: 120px;
+    .title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .profile-data {
+      & > div {
+        display: flex;
+        align-items: center;
+        height: 40px;
+        &.pswd {
+          border-top: 1px solid $color-grey;
+          margin-top: 20px;
+          padding-top: 20px;
+        }
+        p {
+          //   margin-bottom: 10px;
+          font-size: 18px;
+        }
+        input {
+          width: 170px;
+          box-sizing: border-box;
+        }
+        .profileName {
+          margin-left: 5px;
+        }
+        .phone {
+          margin-left: 35px;
+        }
+      }
+    }
+    .btn-wrap {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 20px;
+      button {
+          margin-left: 10px;
+      }
+    }
+  }
+}

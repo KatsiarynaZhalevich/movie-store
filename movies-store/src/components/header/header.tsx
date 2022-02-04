@@ -8,7 +8,6 @@ import MenuItem from '@mui/material/MenuItem';
 import MenuIcon from '@mui/icons-material/Menu';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
-// import MenuIcon from '@mui/icons-material/Menu';
 import Modal from 'react-modal';
 import CloseIcon from '@mui/icons-material/Close';
 import './header.scss';
@@ -159,6 +158,7 @@ const Header = (): JSX.Element => {
         });
         break;
       case ROUTES.HOME_ROUTE:
+      case ROUTES.PROFILE_PAGE:
         history.push({
           pathname: path,
           search: '',
@@ -314,7 +314,9 @@ const Header = (): JSX.Element => {
             }
           >
             {user ? (
-              <MenuItem sx={profileMenuItemStyle}>Profile</MenuItem>
+              <MenuItem sx={profileMenuItemStyle} onClick={() => setRoute(ROUTES.PROFILE_PAGE)}>
+                Profile
+              </MenuItem>
             ) : (
               <MenuItem sx={profileMenuItemStyle} onClick={openSignInModal}>
                 SignIn
