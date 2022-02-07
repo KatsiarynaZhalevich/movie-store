@@ -81,3 +81,44 @@ app.post('/api/deleteFromFavorites', (req: Request, res: Response) => {
   saveUser(updatedUser);
   res.send(updatedUser.favorites);
 });
+
+app.post('/api/updateProfileData', (req: Request, res: Response) => {
+  const users = getUsers();
+  const editedData = users.map((user: IUser) => {
+    if (user.id === req.body.id) {
+      const isAvailable = users.find((item) => item.username === req.body.username);
+
+      if (!isAvailable || (isAvailable && user.username === req.body.username)) {
+        if (req.body.phone !== '') {
+          user.phone = req.body.phone;
+        }
+        if (req.body.username !== '') {
+          user.username = req.body.username;
+        }
+        res.send(user);
+      } else {
+        res.sendStatus(400);
+      }
+    }
+    return user;
+  });
+  updateUsersData(editedData);
+});
+
+app.post('/api/changePassword', (req: Request, res: Response) => {
+  const users = getUsers();
+  console.log(req.body.id);
+  const editedData = users.map((user: IUser) => {
+    if (user.id === req.body.id) {
+      if (user.password === req.body.password) {
+        user.password = req.body.newPassword;
+        updateUsersData(users);
+        res.sendStatus(200);
+      }
+    } else {
+      res.sendStatus(400);
+    }
+    return user;
+  });
+  updateUsersData(editedData);
+});

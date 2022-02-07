@@ -6,6 +6,8 @@ import './signUp.scss';
 import { checkConfirm } from '../../utils/formValidation';
 import { useDispatch } from 'react-redux';
 import { authAction } from '../../redux/actions';
+import { ROUTES } from '../../variables';
+import { useHistory } from 'react-router-dom';
 
 type Props = {
   closeModal: () => void;
@@ -22,6 +24,7 @@ const SignUp = ({ closeModal }: Props): JSX.Element => {
     passwordError: '',
   });
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const setUsernameValue = (value: string, error?: string) => {
     setUsername(value);
@@ -76,7 +79,7 @@ const SignUp = ({ closeModal }: Props): JSX.Element => {
           if (response) {
             window.localStorage.setItem('token', response.token);
             dispatch(authAction(response.newUser));
-            // history.push(routers.PROFILE_ROUTE);
+            history.push(ROUTES.PROFILE_PAGE);
             closeModal();
           }
         });

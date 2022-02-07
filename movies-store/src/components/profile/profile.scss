@@ -19,6 +19,7 @@
         display: flex;
         align-items: center;
         height: 40px;
+        position: relative;
         &.pswd {
           border-top: 1px solid $color-grey;
           margin-top: 20px;
@@ -27,6 +28,20 @@
         p {
           //   margin-bottom: 10px;
           font-size: 18px;
+          &.error {
+            margin-left: 360px;
+            font-size: 11px;
+            top: 13px;
+            &.-data {
+              margin-left: 260px;
+            }
+            &.-pswd {
+              top: 33px;
+            }
+            &.-newPswd {
+              top: 5px;
+            }
+          }
         }
         input {
           width: 170px;
@@ -45,7 +60,7 @@
       justify-content: flex-end;
       margin-top: 20px;
       button {
-          margin-left: 10px;
+        margin-left: 10px;
       }
     }
   }

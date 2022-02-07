@@ -15,7 +15,7 @@ export const checkPass = (pass: string): string => {
 
 export const checkConfirm = (pass: string, confirmPass: string): string => {
   if (pass !== confirmPass) {
-    return 'Passwords mismatch';
+    return 'passwords mismatch';
   }
   return '';
 };
