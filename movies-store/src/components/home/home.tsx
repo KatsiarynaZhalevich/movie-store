@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import './home.scss';
 import { IBaseMovie, IPerson } from '../../interfaces';
-import { API_KEY, API_LINK, IMAGE_URL, PERSON_PLACEHOLDER } from '../../variables';
+import { API_KEY, API_LINK, IMAGE_URL, PERSON_PLACEHOLDER, ROUTES } from '../../variables';
 import Skeleton from '@mui/material/Skeleton';
+import { useHistory } from 'react-router-dom';
 
 const Home = (): JSX.Element => {
   const [load, setLoad] = useState({
@@ -10,6 +11,7 @@ const Home = (): JSX.Element => {
     loadTvShow: false,
     loadPeople: false,
   });
+  const history = useHistory();
 
   const [trendMovies, setTrendMovie] = useState<IBaseMovie[]>([]);
   const [trendTvShows, setTrendTvShows] = useState<IBaseMovie[]>([]);
@@ -49,6 +51,13 @@ const Home = (): JSX.Element => {
     getTrendTvShows();
     getTrendPeople();
   }, []);
+
+  const setRoute = (route: string, id: number) => {
+    history.push({
+      pathname: route,
+      search: `id=${id}`,
+    });
+  };
   return (
     <section className="content home">
       <div className="section-item">
@@ -84,14 +93,19 @@ const Home = (): JSX.Element => {
         <div className="people-wrapper">
           {trendPeople.map((person: IPerson) =>
             !load.loadPeople ? (
-              <a href="#" key={person.id} className="person-item">
+              <div
+                // href="#"
+                key={person.id}
+                className="person-item"
+                onClick={() => setRoute(ROUTES.PERSON_ROUTE, person.id)}
+              >
                 <img
                   src={
                     person.profile_path ? `${IMAGE_URL}${person.profile_path}` : PERSON_PLACEHOLDER
                   }
                 ></img>
-                <span>{person.name}</span>
-              </a>
+                <span onClick={() => setRoute(ROUTES.PERSON_ROUTE, person.id)}>{person.name}</span>
+              </div>
             ) : (
               <Skeleton key={person.id} variant="rectangular" height={200} width={100} />
             )

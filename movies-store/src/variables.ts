@@ -12,4 +12,5 @@ export const ROUTES = {
   MULTI_SEARCH_CATEGORY_PAGE_ROUTE: '/multi-search-category',
   SEARCH_PAGE_ROUTE: '/search',
   PROFILE_PAGE: '/profile',
+  PERSON_ROUTE: '/person',
 };

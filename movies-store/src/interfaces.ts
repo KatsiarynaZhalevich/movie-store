@@ -25,7 +25,8 @@ export interface IBaseMovie {
   createdBy?: string;
   production_companies?: string;
   country?: string;
-  vote_average?: number[];
+  vote_average?: number;
+  character?: string;
 }
 export interface IMovie extends IBaseMovie {
   title: string;

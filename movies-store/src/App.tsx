@@ -4,6 +4,7 @@ import Footer from './components/footer/footer';
 import Header from './components/header/header';
 import Home from './components/home/home';
 import Profile from './components/profile/profile';
+import Person from './components/person/person';
 import ProtectedRoute from './components/protectedRoute/protectedRoute';
 import { ROUTES } from './variables';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
@@ -64,6 +65,9 @@ function App(): JSX.Element {
               <ProtectedRoute>
                 <Profile />
               </ProtectedRoute>
+            </Route>
+            <Route exact path={ROUTES.PERSON_ROUTE}>
+              <Person />
             </Route>
           </Switch>
         </Suspense>
