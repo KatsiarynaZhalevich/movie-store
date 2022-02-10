@@ -10,7 +10,7 @@
   border-radius: 4px;
   .top-info {
     display: flex;
-    .person-image {
+    .image {
       width: 200px;
       margin-right: 30px;
       margin-bottom: 30px;
@@ -47,6 +47,12 @@
           font-size: 16px;
           font-weight: 700;
           margin: 0 50px 0 10px;
+        }
+      }
+      &:hover {
+        cursor: pointer;
+        h4 {
+          color: $color-orange;
         }
       }
     }

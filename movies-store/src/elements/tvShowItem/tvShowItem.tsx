@@ -1,6 +1,6 @@
 import React from 'react';
 import { ITvShow, IUser } from '../../interfaces';
-import { IMAGE_URL, POSTER_PLACEHOLDER } from '../../variables';
+import { IMAGE_URL, POSTER_PLACEHOLDER, ROUTES } from '../../variables';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import { IconButton } from '@mui/material';
@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import getUser from '../../redux/selectors';
 import { addToFavorite, deleteFromFavorite } from '../../utils/utils';
 import { updateFavoriteItem } from '../../redux/actions';
+import { useHistory } from 'react-router-dom';
 
 /* eslint-disable*/
 const TvShowItem = ({
@@ -20,6 +21,7 @@ const TvShowItem = ({
 }: ITvShow): JSX.Element => {
 
   const dispatch = useDispatch();
+  const history = useHistory();
   const user: IUser | null = useSelector(getUser);
   const mediaType = new URLSearchParams(location.search).get('media_type');
   
@@ -35,6 +37,12 @@ const TvShowItem = ({
       const updatedFavorites = await deleteFromFavorite(user.id, id, mediaType);
       dispatch(updateFavoriteItem(updatedFavorites));
     }
+  }
+  const setRoute = () => {
+    history.push({
+      pathname: ROUTES.MOVIE_PAGE,
+      search: `media_type=${mediaType}&id=${id}`,
+    });
   }
   
   return (
@@ -52,7 +60,7 @@ const TvShowItem = ({
         <img src={poster_path ? `${IMAGE_URL}${poster_path}` : POSTER_PLACEHOLDER} alt={name} />
       </div>
       <div className="info">
-        <h3>
+        <h3 onClick={setRoute}>
           {name} {first_air_date ? `${first_air_date.slice(0, 4)}` : ''}
         </h3>
         <p>{overview || 'no overview'}</p>

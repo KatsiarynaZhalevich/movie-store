@@ -9,12 +9,13 @@ import {
   Radio,
   RadioGroup,
   Select,
+  SelectChangeEvent,
   Stack,
 } from '@mui/material';
 import './search.scss';
 import { useHistory, useLocation } from 'react-router-dom';
 import { API_KEY, API_LINK } from '../../variables';
-import { IMovie, ITvShow, IGenre } from '../../interfaces';
+import { IMovie, ITvShow, IGenre, ICountry } from '../../interfaces';
 import MovieItem from '../../elements/movieItem/movieItem';
 import TvShowItem from '../../elements/tvShowItem/tvShowItem';
 
@@ -27,70 +28,70 @@ type Result = {
   movie: IMovie[];
   tvShow: ITvShow[];
 };
-const countries = [
+const countries: ICountry[] = [
   {
     id: 10,
-    ISO: 'AU',
+    iso_3166_1: 'AU',
     name: 'Australia',
   },
   {
     id: 11,
-    ISO: 'BE',
+    iso_3166_1: 'BE',
     name: 'Belgium',
   },
   {
     id: 12,
-    ISO: 'BR',
+    iso_3166_1: 'BR',
     name: 'Brazil',
   },
   {
     id: 2,
-    ISO: 'FR',
+    iso_3166_1: 'FR',
     name: 'France',
   },
   {
     id: 7,
-    ISO: 'DE',
+    iso_3166_1: 'DE',
     name: 'Germany',
   },
   {
     id: 8,
-    ISO: 'IT',
+    iso_3166_1: 'IT',
     name: 'Italy',
   },
   {
     id: 9,
-    ISO: 'JP',
+    iso_3166_1: 'JP',
     name: 'Japan',
   },
   {
     id: 0,
-    ISO: 'RU',
+    iso_3166_1: 'RU',
     name: 'Russia',
   },
   {
     id: 5,
-    ISO: 'ES',
+    iso_3166_1: 'ES',
     name: 'Spain',
   },
   {
     id: 6,
-    ISO: 'TR',
+    iso_3166_1: 'TR',
     name: 'Turkey',
   },
   {
     id: 4,
-    ISO: 'GB',
+    iso_3166_1: 'GB',
     name: 'United Kingdom',
   },
   {
     id: 1,
-    ISO: 'US',
+    iso_3166_1: 'US',
     name: 'United States',
   },
   {
     id: 3,
-    ISO: 'KR',
+    iso_3166_1: 'KR',
     name: 'South Korea',
   },
 ];
@@ -137,24 +138,24 @@ const Search = (): JSX.Element => {
     history.replace({ search: `media_type=${event.target.value}` });
   };
 
-  const changeGenre = (event: any) => {
+  const changeGenre = (event: SelectChangeEvent<string>) => {
     setGenre(event.target.value);
     setLocation('genre', event.target.value);
   };
-  const changeCountry = (event: any) => {
+  const changeCountry = (event: SelectChangeEvent<string>) => {
     setCountry(event.target.value);
     setLocation('country', event.target.value);
   };
-  const changeYear = (event: any) => {
+  const changeYear = (event: SelectChangeEvent<string>) => {
     setYear(event.target.value);
     setLocation('year', event.target.value);
   };
-  const changePopularity = (event: any) => {
+  const changePopularity = (event: SelectChangeEvent<string>) => {
     setPopularity(event.target.value);
     setVoteAverage('');
     setLocation('popularity', event.target.value);
   };
-  const changeVoteAverage = (event: any) => {
+  const changeVoteAverage = (event: SelectChangeEvent<string>) => {
     setVoteAverage(event.target.value);
     setPopularity('');
     setLocation('vote_average', event.target.value);
@@ -214,8 +215,6 @@ const Search = (): JSX.Element => {
     if (voteAverage) {
       link += `&sort_by=vote_average.${voteAverage}`;
     }
-
-    console.log(link);
 
     fetch(link)
       .then((response) => response.json())
@@ -382,7 +381,7 @@ const Search = (): JSX.Element => {
                     All
                   </MenuItem>
                   {countries.map((country) => (
-                    <MenuItem key={country.id} value={country.ISO}>
+                    <MenuItem key={country.id} value={country.iso_3166_1}>
                       {country.name}
                     </MenuItem>
                   ))}

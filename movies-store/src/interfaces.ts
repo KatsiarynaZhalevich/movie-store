@@ -18,15 +18,19 @@ export interface IToken {
 
 export interface IBaseMovie {
   id: number;
-  genre?: string[] | number[];
+  genres?: string;
   poster_path: string;
   overview: string;
   media_type?: string;
   createdBy?: string;
   production_companies?: string;
-  country?: string;
+  production_countries?: string;
   vote_average?: number;
+  vote_count?: number;
   character?: string;
+  job?: string;
+  budget?: number;
+  popularity?: number;
 }
 export interface IMovie extends IBaseMovie {
   title: string;
@@ -52,5 +56,21 @@ export interface IPerson {
 
 export interface IGenre {
   id: number;
+  name: string;
+}
+
+export interface ICredits {
+  id: number;
+  title: string;
+  year: string;
+  job?: string;
+  vote_average: number;
+  character?: string;
+  media_type: string;
+}
+
+export interface ICountry {
+  id: number;
+  iso_3166_1: string;
   name: string;
 }

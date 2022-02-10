@@ -9,7 +9,8 @@
       text-align: left;
       margin-left: 5%;
     }
-    .movies-wrapper, .people-wrapper {
+    .movies-wrapper,
+    .people-wrapper {
       width: 90%;
       height: 250px;
       margin: auto;
@@ -30,21 +31,24 @@
       .person-item {
         box-sizing: border-box;
         margin: 10px;
-
+        cursor: pointer;
+        text-align: center;
         img {
           height: 200px;
           display: inline-block;
           border-radius: 20px;
           max-width: 134px;
         }
+        span:hover {
+          color: $color-orange;
+        }
       }
     }
     .people-wrapper {
       height: 275px;
-      .person-item {        
-          text-decoration: none;
-          color: $color-black;
-        
+      .person-item {
+        text-decoration: none;
+        color: $color-black;
       }
     }
   }

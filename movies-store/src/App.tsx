@@ -5,8 +5,9 @@ import Header from './components/header/header';
 import Home from './components/home/home';
 import Profile from './components/profile/profile';
 import Person from './components/person/person';
+import Movie from './components/movie/movie';
 import ProtectedRoute from './components/protectedRoute/protectedRoute';
-import { ROUTES } from './variables';
+import { PROGRESS_STYLE, ROUTES } from './variables';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import MultiSearch from './components/multiSearch/multiSearch';
 import MultiSearchCategory from './components/multiSearchCategory/multiSearchCategory';
@@ -41,13 +42,17 @@ function App(): JSX.Element {
   }, [dispatch]);
 
   if (loading) {
-    return <CircularProgress />;
+    return (
+      <div className="content">
+        <CircularProgress sx={PROGRESS_STYLE} />
+      </div>
+    );
   }
   return (
     <div className="App">
       <Router>
         <Header />
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<div className="content">Loading...</div>}>
           <Switch>
             <Route exact path={ROUTES.HOME_ROUTE}>
               <Home />
@@ -68,6 +73,9 @@ function App(): JSX.Element {
             </Route>
             <Route exact path={ROUTES.PERSON_ROUTE}>
               <Person />
+            </Route>
+            <Route exact path={ROUTES.MOVIE_PAGE}>
+              <Movie />
             </Route>
           </Switch>
         </Suspense>

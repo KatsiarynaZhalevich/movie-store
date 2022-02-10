@@ -13,4 +13,11 @@ export const ROUTES = {
   SEARCH_PAGE_ROUTE: '/search',
   PROFILE_PAGE: '/profile',
   PERSON_ROUTE: '/person',
+  MOVIE_PAGE: '/movie',
+};
+export const PROGRESS_STYLE = {
+  margin: 'auto',
+  color: '#ff6600',
+  marginLeft: 'calc(50% - 20px)',
+  marginTop: 'calc(25vh)',
 };

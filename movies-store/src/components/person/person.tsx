@@ -1,20 +1,21 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { API_KEY, API_LINK, IMAGE_URL, PERSON_PLACEHOLDER } from '../../variables';
-import { IMovie, IPerson, ITvShow } from '../../interfaces';
+import {
+  API_KEY,
+  API_LINK,
+  IMAGE_URL,
+  PERSON_PLACEHOLDER,
+  PROGRESS_STYLE,
+  ROUTES,
+} from '../../variables';
+import { ICredits, IMovie, IPerson, ITvShow } from '../../interfaces';
 import './person.scss';
 import { Box, CircularProgress, Tab } from '@mui/material';
 import ReadMore from '../../elements/readMore/readMore';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
+import { useHistory, useLocation } from 'react-router-dom';
 
-type Credits = {
-  id: number;
-  title: string;
-  year: string;
-  job?: string;
-  vote_average: number;
-  character?: string;
-};
 const Person = (): JSX.Element => {
+  const location = useLocation();
   const id = new URLSearchParams(location.search).get('id');
   const [load, setLoad] = useState(false);
   const [person, setPerson] = useState<IPerson>({
@@ -29,10 +30,11 @@ const Person = (): JSX.Element => {
     known_for_department: '',
     popularity: 0,
   });
-  const [crewCredits, setCrewCredits] = useState<Credits[]>([]);
-  const [movieCredits, setMovieCredits] = useState<Credits[]>([]);
-  const [tvShowsCredits, setTvShowsCredits] = useState<Credits[]>([]);
+  const [crewCredits, setCrewCredits] = useState<ICredits[]>([]);
+  const [movieCredits, setMovieCredits] = useState<ICredits[]>([]);
+  const [tvShowsCredits, setTvShowsCredits] = useState<ICredits[]>([]);
   const [tab, setTab] = React.useState('1');
+  const history = useHistory();
 
   const getPerson = useCallback(() => {
     setLoad(true);
@@ -44,23 +46,26 @@ const Person = (): JSX.Element => {
           setLoad(false);
         }
       });
-  }, []);
+  }, [location.search]);
 
   const getCredits = useCallback(() => {
-    const crewCredits: Credits[] = [];
-    const movCredits: Credits[] = [];
-    const tvCredits: Credits[] = [];
+    const crewCredits: ICredits[] = [];
+    const movCredits: ICredits[] = [];
+    const tvCredits: ICredits[] = [];
     fetch(`${API_LINK}person/${id}/combined_credits${API_KEY}`)
       .then((response) => response.json())
       .then((response) => {
         if (response) {
-          response.crew.map((item: any) => {
+          response.crew.map((item: IMovie | ITvShow) => {
             const credit = {
               id: item.id,
-              title: item.title || item.name,
-              year: item.release_date?.slice(0, 4) || item.first_air_date?.slice(0, 4),
+              title: (item as IMovie).title || (item as ITvShow).name,
+              year:
+                (item as IMovie).release_date?.slice(0, 4) ||
+                (item as ITvShow).first_air_date?.slice(0, 4),
               job: item.job,
-              vote_average: item.vote_average,
+              vote_average: item.vote_average || 0,
+              media_type: item.media_type || '',
             };
             crewCredits.push(credit);
           });
@@ -74,6 +79,7 @@ const Person = (): JSX.Element => {
               job: 'acting',
               character: item.character,
               vote_average: item.vote_average || 0,
+              media_type: item.media_type || '',
             };
             if (item.media_type === 'movie') {
               movCredits.push(credit);
@@ -81,30 +87,41 @@ const Person = (): JSX.Element => {
               tvCredits.push(credit);
             }
           });
-          setCrewCredits(crewCredits.sort((i: Credits, j: Credits) => +j.year - +i.year));
-          setMovieCredits(movCredits.sort((i: Credits, j: Credits) => +j.year - +i.year));
-          setTvShowsCredits(tvCredits.sort((i: Credits, j: Credits) => +j.year - +i.year));
+          setCrewCredits(crewCredits.sort((i: ICredits, j: ICredits) => +j.year - +i.year));
+          setMovieCredits(movCredits.sort((i: ICredits, j: ICredits) => +j.year - +i.year));
+          setTvShowsCredits(tvCredits.sort((i: ICredits, j: ICredits) => +j.year - +i.year));
         }
       });
-  }, []);
+  }, [location.search]);
 
   useEffect(() => {
     getPerson();
     getCredits();
-  }, []);
+  }, [location.search]);
 
   const tabChange = (event: React.SyntheticEvent, newValue: string) => {
     setTab(newValue);
   };
 
+  const setRoute = (id: number, mediaType: string) => {
+    history.push({
+      pathname: ROUTES.MOVIE_PAGE,
+      search: `media_type=${mediaType}&id=${id}`,
+    });
+  };
+
   if (load) {
-    return <CircularProgress />;
+    return (
+      <div className="content">
+        <CircularProgress sx={PROGRESS_STYLE} />
+      </div>
+    );
   }
   return (
     <div className="page content">
       <div className="person-info ">
         <div className="top-info">
-          <div className="person-image">
+          <div className="image">
             <img
               src={person.profile_path ? `${IMAGE_URL}${person.profile_path}` : PERSON_PLACEHOLDER}
               alt={person.name}
@@ -130,10 +147,14 @@ const Person = (): JSX.Element => {
             </p>
           </div>
         </div>
-        <p>
-          <strong>Biography:</strong>
-        </p>
-        <ReadMore>{person.biography || ''}</ReadMore>
+        {person.biography ? (
+          <>
+            <p>
+              <strong>Biography:</strong>
+            </p>
+            <ReadMore>{person.biography || ''}</ReadMore>
+          </>
+        ) : null}
         <div className="credits">
           <Box sx={{ width: '100%', typography: 'body1' }}>
             <TabContext value={tab}>
@@ -146,8 +167,12 @@ const Person = (): JSX.Element => {
               </Box>
               <TabPanel value="1">
                 {movieCredits.length > 0 ? (
-                  movieCredits.map((movie: Credits) => (
-                    <div key={movie.id} className="credit-item">
+                  movieCredits.map((movie: ICredits) => (
+                    <div
+                      key={movie.id}
+                      className="credit-item"
+                      onClick={() => setRoute(movie.id, movie.media_type)}
+                    >
                       <div className="credit-title">
                         <h4>
                           {movie.title} {movie.year ? `(${movie.year})` : ''}
@@ -163,8 +188,12 @@ const Person = (): JSX.Element => {
               </TabPanel>
               <TabPanel value="2">
                 {tvShowsCredits.length > 0 ? (
-                  tvShowsCredits.map((tvShow: Credits, index: number) => (
-                    <div key={index} className="credit-item">
+                  tvShowsCredits.map((tvShow: ICredits, index: number) => (
+                    <div
+                      key={index}
+                      className="credit-item"
+                      onClick={() => setRoute(tvShow.id, tvShow.media_type)}
+                    >
                       <div className="credit-title">
                         <h4>
                           {tvShow.title} {tvShow.year ? `(${tvShow.year})` : ''}
@@ -180,8 +209,12 @@ const Person = (): JSX.Element => {
               </TabPanel>
               <TabPanel value="3">
                 {crewCredits.length > 0 ? (
-                  crewCredits.map((crew: Credits) => (
-                    <div key={crew.id} className="credit-item">
+                  crewCredits.map((crew: ICredits, index: number) => (
+                    <div
+                      key={index}
+                      className="credit-item"
+                      onClick={() => setRoute(crew.id, crew.media_type)}
+                    >
                       <div className="credit-title">
                         <h4>
                           {crew.title} {crew.year ? `(${crew.year})` : ''}

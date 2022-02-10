@@ -52,11 +52,18 @@ const Home = (): JSX.Element => {
     getTrendPeople();
   }, []);
 
-  const setRoute = (route: string, id: number) => {
-    history.push({
-      pathname: route,
-      search: `id=${id}`,
-    });
+  const setRoute = (route: string, id: number, mediaType?: string) => {
+    if (route === ROUTES.PERSON_ROUTE) {
+      history.push({
+        pathname: route,
+        search: `id=${id}`,
+      });
+    } else {
+      history.push({
+        pathname: route,
+        search: `media_type=${mediaType}&id=${id}`,
+      });
+    }
   };
   return (
     <section className="content home">
@@ -65,9 +72,13 @@ const Home = (): JSX.Element => {
         <div className="movies-wrapper">
           {trendMovies.map((movie: IBaseMovie) =>
             !load.loadMovie ? (
-              <a href="#" key={movie.id} className="movie-item">
+              <div
+                key={movie.id}
+                className="movie-item"
+                onClick={() => setRoute(ROUTES.MOVIE_PAGE, movie.id, 'movie')}
+              >
                 <img src={`${IMAGE_URL}${movie.poster_path}`}></img>
-              </a>
+              </div>
             ) : (
               <Skeleton key={movie.id} variant="rectangular" height={200} width={100} />
             )
@@ -79,9 +90,13 @@ const Home = (): JSX.Element => {
         <div className="movies-wrapper">
           {trendTvShows.map((tvShow: IBaseMovie) =>
             !load.loadTvShow ? (
-              <a href="#" key={tvShow.id} className="movie-item">
+              <div
+                key={tvShow.id}
+                className="movie-item"
+                onClick={() => setRoute(ROUTES.MOVIE_PAGE, tvShow.id, 'tvShow')}
+              >
                 <img src={`${IMAGE_URL}${tvShow.poster_path}`}></img>
-              </a>
+              </div>
             ) : (
               <Skeleton key={tvShow.id} variant="rectangular" height={200} width={100} />
             )

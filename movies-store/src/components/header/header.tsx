@@ -140,7 +140,7 @@ const Header = (): JSX.Element => {
 
   //         end modals methods               //
 
-  const setRoute = (path: string, search?: string, type?: string): void => {
+  const setRoute = (path: string, search?: string, type?: string, id?: number): void => {
     switch (path) {
       case ROUTES.MULTI_SEARCH_PAGE_ROUTE:
         if (searchValue.value.length > 2) {
@@ -162,6 +162,19 @@ const Header = (): JSX.Element => {
         history.push({
           pathname: path,
           search: '',
+        });
+        break;
+      case ROUTES.PERSON_ROUTE:
+        console.log('person');
+        history.push({
+          pathname: path,
+          search: `id=${id}`,
+        });
+        break;
+      case ROUTES.MOVIE_PAGE:
+        history.push({
+          pathname: path,
+          search: `media_type=${type}&id=${id}`,
         });
         break;
       default:
@@ -257,8 +270,16 @@ const Header = (): JSX.Element => {
                   <li className="first">People</li>
                   {searchPeople.length > 0 ? (
                     searchPeople.map((itemPeople: IPerson) => (
-                      <li key={itemPeople.id}>
-                        <button type="button">{itemPeople.name}</button>
+                      <li
+                        key={itemPeople.id}
+                        onMouseDown={() => setRoute(ROUTES.PERSON_ROUTE, '', '', itemPeople.id)}
+                      >
+                        <button
+                          type="button"
+                          // onClick={() => setRoute(ROUTES.PERSON_ROUTE, '', '', itemPeople.id)}
+                        >
+                          {itemPeople.name}
+                        </button>
                       </li>
                     ))
                   ) : (
@@ -270,7 +291,14 @@ const Header = (): JSX.Element => {
                   {searchMovie.length > 0 ? (
                     searchMovie.map((itemMovie: IMovie) => (
                       <li key={itemMovie.id}>
-                        <button type="button">{itemMovie.title}</button>
+                        <button
+                          type="button"
+                          onMouseDown={() =>
+                            setRoute(ROUTES.MOVIE_PAGE, '', itemMovie.media_type, itemMovie.id)
+                          }
+                        >
+                          {itemMovie.title}
+                        </button>
                       </li>
                     ))
                   ) : (
@@ -282,7 +310,14 @@ const Header = (): JSX.Element => {
                   {searchTvShow.length > 0 ? (
                     searchTvShow.map((itemTvShow: ITvShow) => (
                       <li key={itemTvShow.id}>
-                        <button type="button">{itemTvShow.name}</button>
+                        <button
+                          type="button"
+                          onMouseDown={() =>
+                            setRoute(ROUTES.MOVIE_PAGE, '', itemTvShow.media_type, itemTvShow.id)
+                          }
+                        >
+                          {itemTvShow.name}
+                        </button>
                       </li>
                     ))
                   ) : (
@@ -341,7 +376,6 @@ const Header = (): JSX.Element => {
             <h1>SignIn</h1>
             <CloseIcon onClick={closeModal} className="close" />
             <SignIn closeModal={closeModal} />
-            {/* <SignIn setRoute={route} closeModal={closeModal} /> */}
           </Modal>
           <Modal
             onRequestClose={closeModal}
