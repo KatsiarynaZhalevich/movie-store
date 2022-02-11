@@ -6,6 +6,8 @@ import Home from './components/home/home';
 import Profile from './components/profile/profile';
 import Person from './components/person/person';
 import Movie from './components/movie/movie';
+import Favorites from './components/favorites/favorites';
+import PageNotFound from './components/pageNotFound/pageNotFound';
 import ProtectedRoute from './components/protectedRoute/protectedRoute';
 import { PROGRESS_STYLE, ROUTES } from './variables';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
@@ -57,25 +59,33 @@ function App(): JSX.Element {
             <Route exact path={ROUTES.HOME_ROUTE}>
               <Home />
             </Route>
-            <Route exact path={ROUTES.MULTI_SEARCH_PAGE_ROUTE}>
+            <Route path={ROUTES.MULTI_SEARCH_PAGE_ROUTE}>
               <MultiSearch />
             </Route>
-            <Route exact path={ROUTES.MULTI_SEARCH_CATEGORY_PAGE_ROUTE}>
+            <Route path={ROUTES.MULTI_SEARCH_CATEGORY_PAGE_ROUTE}>
               <MultiSearchCategory />
             </Route>
-            <Route exact path={ROUTES.SEARCH_PAGE_ROUTE}>
+            <Route path={ROUTES.SEARCH_PAGE_ROUTE}>
               <Search />
             </Route>
-            <Route exact path={ROUTES.PROFILE_PAGE}>
+            <Route path={ROUTES.PROFILE_PAGE}>
               <ProtectedRoute>
                 <Profile />
               </ProtectedRoute>
             </Route>
-            <Route exact path={ROUTES.PERSON_ROUTE}>
+            <Route path={ROUTES.FAVORITES_PAGE}>
+              <ProtectedRoute>
+                <Favorites />
+              </ProtectedRoute>
+            </Route>
+            <Route path={ROUTES.PERSON_ROUTE}>
               <Person />
             </Route>
-            <Route exact path={ROUTES.MOVIE_PAGE}>
+            <Route path={ROUTES.MOVIE_PAGE}>
               <Movie />
+            </Route>
+            <Route path="*">
+              <PageNotFound />
             </Route>
           </Switch>
         </Suspense>

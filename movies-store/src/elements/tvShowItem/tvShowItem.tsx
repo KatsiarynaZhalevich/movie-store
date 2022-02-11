@@ -23,31 +23,30 @@ const TvShowItem = ({
   const dispatch = useDispatch();
   const history = useHistory();
   const user: IUser | null = useSelector(getUser);
-  const mediaType = new URLSearchParams(location.search).get('media_type');
   
   const addFavorite = async() => {
     if(user) {
-      const updatedFavorites = await addToFavorite(user.id, id, mediaType); 
+      const updatedFavorites = await addToFavorite(user.id, id, 'tvShow'); 
       dispatch(updateFavoriteItem(updatedFavorites));
     }
   }
 
   const deleteFavorite = async() => {
     if(user) {
-      const updatedFavorites = await deleteFromFavorite(user.id, id, mediaType);
+      const updatedFavorites = await deleteFromFavorite(user.id, id, 'tvShow');
       dispatch(updateFavoriteItem(updatedFavorites));
     }
   }
   const setRoute = () => {
     history.push({
       pathname: ROUTES.MOVIE_PAGE,
-      search: `media_type=${mediaType}&id=${id}`,
+      search: `media_type=tvShow&id=${id}`,
     });
   }
   
   return (
     <div key={id} className="result-item">
-      {!user ? null : user?.favorites.tvShow.find((tvShoeId) => tvShoeId === id)? (
+      {!user ? null : user?.favorites.tvShow.find((tvShowId) => tvShowId === id)? (
       <IconButton size="large" aria-label="search" color="inherit" className="favorite" onClick={deleteFavorite}>
         <BookmarkIcon className="icon" />
       </IconButton>

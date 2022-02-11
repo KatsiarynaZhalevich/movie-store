@@ -25,13 +25,13 @@ const MultiSearch = (): JSX.Element => {
         .then((response) => {
           const movieToShow = response.results
             .filter((searchItem: IMovie) => searchItem.media_type === 'movie')
-            .slice(0, 5);
+            .slice(0, 4);
           const tvShowToShow = response.results
             .filter((searchItem: ITvShow) => searchItem.media_type === 'tv')
-            .slice(0, 5);
+            .slice(0, 4);
           const peopleToShow = response.results
             .filter((searchItem: IPerson) => searchItem.media_type === 'person')
-            .slice(0, 5);
+            .slice(0, 4);
 
           setSearchMovie(movieToShow);
           setSearchTvShow(tvShowToShow);

@@ -14,6 +14,8 @@ export const ROUTES = {
   PROFILE_PAGE: '/profile',
   PERSON_ROUTE: '/person',
   MOVIE_PAGE: '/movie',
+  FAVORITES_PAGE: '/favorites',
+  PAGE_NOT_FOUND: '/404',
 };
 export const PROGRESS_STYLE = {
   margin: 'auto',

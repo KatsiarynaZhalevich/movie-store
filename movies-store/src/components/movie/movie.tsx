@@ -10,19 +10,36 @@ import {
 } from '../../variables';
 import { CircularProgress } from '@mui/material';
 import { ICountry, IGenre, IMovie, IPerson, ITvShow } from '../../interfaces';
-import { useHistory, useLocation } from 'react-router-dom';
+import { Redirect, useHistory, useLocation } from 'react-router-dom';
 
 const Movie = (): JSX.Element => {
   const location = useLocation();
   const search = new URLSearchParams(location.search);
   const [id, setId] = useState(search.get('id'));
-  const [mediaType, setMediaType] = useState(search.get('media_type') === 'movie' ? 'movie' : 'tv');
+  const [mediaType, setMediaType] = useState(
+    search.get('media_type') === 'movie'
+      ? 'movie'
+      : search.get('media_type') === 'tvShow'
+      ? 'tv'
+      : ''
+  );
   const [load, setLoad] = useState(false);
   const [data, setData] = useState<IMovie | ITvShow>();
   const [similar, setSimilar] = useState([]);
-  const [actors, setActors] = useState<String[]>([]);
+  const [actors, setActors] = useState<IPerson[]>([]);
   const history = useHistory();
-  console.log('location', location.search);
+
+  if (!id || !mediaType) {
+    return (
+      <Redirect
+        to={{
+          pathname: ROUTES.PAGE_NOT_FOUND,
+          search: '',
+        }}
+      />
+    );
+  }
+
   const getData = useCallback(() => {
     setLoad(true);
     fetch(`${API_LINK}${mediaType}/${id}${API_KEY}`)
@@ -44,6 +61,14 @@ const Movie = (): JSX.Element => {
 
           setData(response);
         }
+      })
+      .catch(() => {
+        <Redirect
+          to={{
+            pathname: ROUTES.PAGE_NOT_FOUND,
+            search: '',
+          }}
+        />;
       });
   }, [location.search, id, mediaType]);
 
@@ -53,46 +78,53 @@ const Movie = (): JSX.Element => {
       .then((response) => response.json())
       .then((response) => {
         if (response) {
-          setLoad(false);
           setSimilar(response.results.slice(0, 5));
         }
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => {
+        setLoad(false);
       });
   }, [location.search, id, mediaType]);
 
   const getActors = useCallback(() => {
     setLoad(true);
-    const actorsArr: String[] = [];
     fetch(`${API_LINK}${mediaType}/${id}/credits${API_KEY}`)
       .then((response) => response.json())
       .then((response) => {
         if (response) {
           setLoad(false);
-          response.cast.map((actor: IPerson) => {
-            actorsArr.push(actor.name);
-          });
-          setActors(actorsArr.slice(0, 10));
+          setActors(response.cast.slice(0, 10));
         }
+      })
+      .catch((error) => {
+        console.log(error);
       });
   }, [location.search, id, mediaType]);
 
   useEffect(() => {
-    console.log('11');
-
     setId(search.get('id'));
     setMediaType(search.get('media_type') === 'movie' ? 'movie' : 'tv');
     getData();
     getSimilarData();
     getActors();
   }, [location.search, id, mediaType]);
-  console.log('id', id);
-  console.log('type', mediaType);
 
-  const setRoute = (id: number) => {
-    setId(String(id));
-    history.push({ 
-      pathname: ROUTES.MOVIE_PAGE,
-      search: `media_type=${mediaType}&id=${id}`,
-    });
+  const setRoute = (id: number, type?: string) => {
+    if (type === 'person') {
+      history.push({
+        pathname: ROUTES.PERSON_ROUTE,
+        search: `id=${id}`,
+      });
+    } else {
+      setId(String(id));
+      history.push({
+        pathname: ROUTES.MOVIE_PAGE,
+        search: `media_type=${mediaType}&id=${id}`,
+      });
+    }
   };
 
   if (load) {
@@ -102,6 +134,7 @@ const Movie = (): JSX.Element => {
       </div>
     );
   }
+
   return (
     <section className="page content ">
       <div className="movie-info">
@@ -160,8 +193,10 @@ const Movie = (): JSX.Element => {
             <p>
               <strong>Cast</strong>
             </p>
-            {actors?.map((actor: String, index: number) => (
-              <p key={index}>{actor}</p>
+            {actors?.map((actor: IPerson) => (
+              <p key={actor.id} onClick={() => setRoute(actor.id, 'person')}>
+                {actor.name}
+              </p>
             ))}
           </div>
         </div>

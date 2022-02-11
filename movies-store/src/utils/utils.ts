@@ -1,7 +1,3 @@
-export const takeFirstFive = <Type>(data: Type[]): Type[] => {
-  return data.slice(0, 5);
-};
-
 export const addToFavorite = (userId: number, id: number, mediaType: string | null) => {
   const favoriteData = {
     userId: userId,

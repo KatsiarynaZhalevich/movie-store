@@ -11,32 +11,32 @@ import { updateFavoriteItem } from '../../redux/actions';
 import { useHistory } from 'react-router-dom';
 
 /* eslint-disable*/
-const MovieItem = ({ id, title, poster_path, release_date, overview, media_type = '' }: IMovie): JSX.Element => {
+const MovieItem = ({ id, title, poster_path, release_date, overview }: IMovie): JSX.Element => {
   const dispatch = useDispatch();
   const history = useHistory();
   const user: IUser | null = useSelector(getUser);
   const search = new URLSearchParams(location.search);
 
-  const mediaType = search.get('media_type') || media_type;
+  // const mediaType = search.get('media_type') || media_type;
 
   
   const addFavorite = async() => {    
     if(user) {
-      const updatedFavorites = await addToFavorite(user.id, id, mediaType); 
+      const updatedFavorites = await addToFavorite(user.id, id, 'movie'); 
       dispatch(updateFavoriteItem(updatedFavorites));
     }
   }
 
   const deleteFavorite = async() => {
     if(user) {
-      const updatedFavorites = await deleteFromFavorite(user.id, id, mediaType);
+      const updatedFavorites = await deleteFromFavorite(user.id, id, 'movie');      
       dispatch(updateFavoriteItem(updatedFavorites));
     }
   }
   const setRoute = () => {
     history.push({
       pathname: ROUTES.MOVIE_PAGE,
-      search: `media_type=${mediaType}&id=${id}`,
+      search: `media_type=movie&id=${id}`,
     });
   }
   return (

@@ -15,7 +15,7 @@ import { InputBase } from '@mui/material';
 import MenuElement from '../../elements/menu/menuElement';
 import { API_KEY, API_LINK, ROUTES } from '../../variables';
 import { IMovie, IPerson, ITvShow, IUser } from '../../interfaces';
-import { takeFirstFive } from '../../utils/utils';
+// import { takeFirstFive } from '../../utils/utils';
 import { useHistory } from 'react-router-dom';
 import SignIn from '../signIn/signIn';
 import SignUp from '../signUp/signUp';
@@ -95,17 +95,17 @@ const Header = (): JSX.Element => {
         )
           .then((response) => response.json())
           .then((response) => {
-            const movieToShow: IMovie[] = takeFirstFive(
-              response.results.filter((searchItem: IMovie) => searchItem.media_type === 'movie')
-            );
+            const movieToShow: IMovie[] = response.results
+              .filter((searchItem: IMovie) => searchItem.media_type === 'movie')
+              .slice(0, 5);
             setSearchMovie(movieToShow);
-            const tvShowToShow: ITvShow[] = takeFirstFive(
-              response.results.filter((searchItem: ITvShow) => searchItem.media_type === 'tv')
-            );
+            const tvShowToShow: ITvShow[] = response.results
+              .filter((searchItem: ITvShow) => searchItem.media_type === 'tv')
+              .slice(0, 5);
             setSearchTvShow(tvShowToShow);
-            const peopleToShow: IPerson[] = takeFirstFive(
-              response.results.filter((searchItem: IPerson) => searchItem.media_type === 'person')
-            );
+            const peopleToShow: IPerson[] = response.results
+              .filter((searchItem: IPerson) => searchItem.media_type === 'person')
+              .slice(0, 5);
             setSearchPeople(peopleToShow);
           });
       } catch (error) {
@@ -159,6 +159,7 @@ const Header = (): JSX.Element => {
         break;
       case ROUTES.HOME_ROUTE:
       case ROUTES.PROFILE_PAGE:
+      case ROUTES.FAVORITES_PAGE:
         history.push({
           pathname: path,
           search: '',
@@ -270,13 +271,10 @@ const Header = (): JSX.Element => {
                   <li className="first">People</li>
                   {searchPeople.length > 0 ? (
                     searchPeople.map((itemPeople: IPerson) => (
-                      <li
-                        key={itemPeople.id}
-                        onMouseDown={() => setRoute(ROUTES.PERSON_ROUTE, '', '', itemPeople.id)}
-                      >
+                      <li key={itemPeople.id}>
                         <button
                           type="button"
-                          // onClick={() => setRoute(ROUTES.PERSON_ROUTE, '', '', itemPeople.id)}
+                          onMouseDown={() => setRoute(ROUTES.PERSON_ROUTE, '', '', itemPeople.id)}
                         >
                           {itemPeople.name}
                         </button>
@@ -329,16 +327,19 @@ const Header = (): JSX.Element => {
           </Search>
         </div>
         <div className="iconWrapper">
-          {!user ? null : user.favorites.movie.length === 0 &&
-            user.favorites.tvShow.length === 0 ? (
-            <IconButton size="large" aria-label="search" color="inherit">
+          <IconButton
+            size="large"
+            aria-label="search"
+            color="inherit"
+            onClick={() => setRoute(ROUTES.FAVORITES_PAGE)}
+          >
+            {!user ? null : user.favorites.movie.length === 0 &&
+              user.favorites.tvShow.length === 0 ? (
               <BookmarkBorderIcon className="icon" />
-            </IconButton>
-          ) : (
-            <IconButton size="large" aria-label="search" color="inherit">
+            ) : (
               <BookmarkIcon className="icon" />
-            </IconButton>
-          )}
+            )}
+          </IconButton>
           <MenuElement
             title={
               user ? (

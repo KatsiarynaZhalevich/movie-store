@@ -12,7 +12,7 @@ import './person.scss';
 import { Box, CircularProgress, Tab } from '@mui/material';
 import ReadMore from '../../elements/readMore/readMore';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
-import { useHistory, useLocation } from 'react-router-dom';
+import { Redirect, useHistory, useLocation } from 'react-router-dom';
 
 const Person = (): JSX.Element => {
   const location = useLocation();
@@ -36,6 +36,17 @@ const Person = (): JSX.Element => {
   const [tab, setTab] = React.useState('1');
   const history = useHistory();
 
+  if (!id) {
+    return (
+      <Redirect
+        to={{
+          pathname: ROUTES.PAGE_NOT_FOUND,
+          search: '',
+        }}
+      />
+    );
+  }
+
   const getPerson = useCallback(() => {
     setLoad(true);
     fetch(`${API_LINK}person/${id}${API_KEY}`)
@@ -45,6 +56,9 @@ const Person = (): JSX.Element => {
           setPerson(response);
           setLoad(false);
         }
+      })
+      .catch((error) => {
+        console.log(error);
       });
   }, [location.search]);
 
@@ -159,10 +173,26 @@ const Person = (): JSX.Element => {
           <Box sx={{ width: '100%', typography: 'body1' }}>
             <TabContext value={tab}>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                <TabList onChange={tabChange} aria-label="lab API tabs example">
-                  <Tab label={`Movies(${movieCredits.length})`} value="1" />
-                  <Tab label={`TvShows(${tvShowsCredits.length})`} value="2" />
-                  <Tab label={`Crew(${crewCredits.length})`} value="3" />
+                <TabList
+                  sx={{ '& .MuiTabs-indicator': { backgroundColor: '#ff6600' } }}
+                  onChange={tabChange}
+                  aria-label="lab API tabs example"
+                >
+                  <Tab
+                    sx={{ '&.Mui-selected': { color: '#ff6600' } }}
+                    label={`Movies (${movieCredits.length})`}
+                    value="1"
+                  />
+                  <Tab
+                    sx={{ '&.Mui-selected': { color: '#ff6600' } }}
+                    label={`TvShows (${tvShowsCredits.length})`}
+                    value="2"
+                  />
+                  <Tab
+                    sx={{ '&.Mui-selected': { color: '#ff6600' } }}
+                    label={`Crew (${crewCredits.length})`}
+                    value="3"
+                  />
                 </TabList>
               </Box>
               <TabPanel value="1">
