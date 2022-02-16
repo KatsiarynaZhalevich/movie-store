@@ -62,7 +62,7 @@ export interface IGenre {
 export interface ICredits {
   id: number;
   title: string;
-  year: string;
+  year: number;
   job?: string;
   vote_average: number;
   character?: string;

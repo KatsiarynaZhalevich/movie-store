@@ -1,25 +1,25 @@
-@import "../../styles/variables.scss";
+@import '../../styles/variables.scss';
 .footer {
-    background-color: $color-black;
-    color: $color-white;
-    height: 100px;
-    display: flex;
-    justify-content: center;
+  background-color: $color-black;
+  color: $color-white;
+  height: 100px;
+  display: flex;
+  justify-content: center;
 
-    .social {
-        width: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        a{
-            color: $color-white;
-            svg {
-                margin: 0 10px;
-                font-size: 30px;
-                &:hover {
-                    cursor: pointer;
-                }
-            }
+  .social {
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    a {
+      color: $color-white;
+      svg {
+        margin: 0 10px;
+        font-size: 40px;
+        &:hover {
+          cursor: pointer;
         }
+      }
     }
+  }
 }

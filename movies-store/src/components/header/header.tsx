@@ -15,7 +15,6 @@ import { InputBase } from '@mui/material';
 import MenuElement from '../../elements/menu/menuElement';
 import { API_KEY, API_LINK, ROUTES } from '../../variables';
 import { IMovie, IPerson, ITvShow, IUser } from '../../interfaces';
-// import { takeFirstFive } from '../../utils/utils';
 import { useHistory } from 'react-router-dom';
 import SignIn from '../signIn/signIn';
 import SignUp from '../signUp/signUp';

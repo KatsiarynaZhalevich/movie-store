@@ -18,6 +18,7 @@ const Person = (): JSX.Element => {
   const location = useLocation();
   const id = new URLSearchParams(location.search).get('id');
   const [load, setLoad] = useState(false);
+  const [loadCredits, setLoadCredits] = useState(false);
   const [person, setPerson] = useState<IPerson>({
     id: 0,
     name: '',
@@ -56,16 +57,14 @@ const Person = (): JSX.Element => {
           setPerson(response);
           setLoad(false);
         }
-      })
-      .catch((error) => {
-        console.log(error);
       });
   }, [location.search]);
 
   const getCredits = useCallback(() => {
-    const crewCredits: ICredits[] = [];
-    const movCredits: ICredits[] = [];
-    const tvCredits: ICredits[] = [];
+    setLoadCredits(true);
+    const crewArr: ICredits[] = [];
+    const movieArr: ICredits[] = [];
+    const tvArr: ICredits[] = [];
     fetch(`${API_LINK}person/${id}/combined_credits${API_KEY}`)
       .then((response) => response.json())
       .then((response) => {
@@ -75,38 +74,53 @@ const Person = (): JSX.Element => {
               id: item.id,
               title: (item as IMovie).title || (item as ITvShow).name,
               year:
-                (item as IMovie).release_date?.slice(0, 4) ||
-                (item as ITvShow).first_air_date?.slice(0, 4),
+                +(item as IMovie).release_date?.slice(0, 4) ||
+                +(item as ITvShow).first_air_date?.slice(0, 4),
               job: item.job,
               vote_average: item.vote_average || 0,
               media_type: item.media_type || '',
             };
-            crewCredits.push(credit);
+            crewArr.push(credit);
           });
           response.cast.map((item: IMovie | ITvShow) => {
             const credit = {
               id: item.id,
               title: (item as IMovie).title || (item as ITvShow).name,
               year:
-                (item as IMovie).release_date?.slice(0, 4) ||
-                (item as ITvShow).first_air_date?.slice(0, 4),
+                +(item as IMovie).release_date?.slice(0, 4) ||
+                +(item as ITvShow).first_air_date?.slice(0, 4),
               job: 'acting',
               character: item.character,
               vote_average: item.vote_average || 0,
               media_type: item.media_type || '',
             };
             if (item.media_type === 'movie') {
-              movCredits.push(credit);
+              movieArr.push(credit);
             } else {
-              tvCredits.push(credit);
+              tvArr.push(credit);
             }
           });
-          setCrewCredits(crewCredits.sort((i: ICredits, j: ICredits) => +j.year - +i.year));
-          setMovieCredits(movCredits.sort((i: ICredits, j: ICredits) => +j.year - +i.year));
-          setTvShowsCredits(tvCredits.sort((i: ICredits, j: ICredits) => +j.year - +i.year));
+          setCrewCredits(sortCredits(crewArr));
+          setMovieCredits(sortCredits(movieArr));
+          setTvShowsCredits(sortCredits(tvArr));
         }
       });
   }, [location.search]);
+
+  const sortCredits = (credits: ICredits[]) => {
+    return credits.sort((i: ICredits, j: ICredits) => {
+      if (!isFinite(i.year) && !isFinite(j.year)) {
+        return 0;
+      }
+      if (!isFinite(i.year)) {
+        return 1;
+      }
+      if (!isFinite(j.year)) {
+        return -1;
+      }
+      return j.year - i.year;
+    });
+  };
 
   useEffect(() => {
     getPerson();
@@ -131,6 +145,7 @@ const Person = (): JSX.Element => {
       </div>
     );
   }
+
   return (
     <div className="page content">
       <div className="person-info ">
@@ -212,6 +227,10 @@ const Person = (): JSX.Element => {
                       <p>{movie.character}</p>
                     </div>
                   ))
+                ) : loadCredits ? (
+                  <div className="credits-spinner">
+                    <CircularProgress sx={PROGRESS_STYLE} />
+                  </div>
                 ) : (
                   <p>nothing to show</p>
                 )}

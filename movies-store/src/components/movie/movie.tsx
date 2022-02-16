@@ -79,13 +79,8 @@ const Movie = (): JSX.Element => {
       .then((response) => {
         if (response) {
           setSimilar(response.results.slice(0, 5));
+          setLoad(false);
         }
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-      .finally(() => {
-        setLoad(false);
       });
   }, [location.search, id, mediaType]);
 
