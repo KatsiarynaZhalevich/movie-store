@@ -74,3 +74,9 @@ export interface ICountry {
   iso_3166_1: string;
   name: string;
 }
+
+export interface ISearch {
+  movieToShow: IMovie[];
+  tvShowToShow: ITvShow[];
+  peopleToShow: IPerson[];
+}

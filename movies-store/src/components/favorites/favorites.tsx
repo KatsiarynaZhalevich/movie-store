@@ -3,11 +3,12 @@ import './favorites.scss';
 import { IMovie, ITvShow, IUser } from '../../interfaces';
 import { useSelector } from 'react-redux';
 import getUser from '../../redux/selectors';
-import { API_KEY, API_LINK, PROGRESS_STYLE } from '../../variables';
+import { PROGRESS_STYLE } from '../../variables';
 import { CircularProgress, Box, Tab } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import MovieItem from '../../elements/movieItem/movieItem';
 import TvShowItem from '../../elements/tvShowItem/tvShowItem';
+import { getMovies, getTvShows } from '../../appAPI/api';
 
 const Favorites = (): JSX.Element => {
   const user: IUser | null = useSelector(getUser);
@@ -23,19 +24,13 @@ const Favorites = (): JSX.Element => {
   const getData = useCallback(async () => {
     setLoad(true);
     if (user?.favorites.movie) {
-      const moviesData = user.favorites.movie.map(async (movieId: number) => {
-        const result = await fetch(`${API_LINK}movie/${movieId}${API_KEY}`);
-        return result.json();
-      });
-      setMovies(await Promise.all(moviesData));
+      const data = await getMovies(user.favorites.movie, 'movie');
+      setMovies(data);
     }
 
     if (user?.favorites.tvShow) {
-      const tvShowsData = user.favorites.tvShow.map(async (tvShowId: number) => {
-        const result = await fetch(`${API_LINK}tv/${tvShowId}${API_KEY}`);
-        return result.json();
-      });
-      setTvShows(await Promise.all(tvShowsData));
+      const tvShowsData = await getTvShows(user.favorites.tvShow, 'tv');
+      setTvShows(tvShowsData);
     }
 
     setLoad(false);
@@ -47,7 +42,7 @@ const Favorites = (): JSX.Element => {
 
   if (load) {
     return (
-      <div className="content">
+      <div data-testid="spinner" className="content">
         <CircularProgress sx={PROGRESS_STYLE} />
       </div>
     );
@@ -57,6 +52,7 @@ const Favorites = (): JSX.Element => {
     <section className=" content">
       {user && (user?.favorites.movie.length > 0 || user?.favorites.tvShow.length > 0) ? (
         <div className="favorites">
+          <h1>My favorites</h1>
           <Box sx={{ width: '100%', typography: 'body1' }}>
             <TabContext value={tab}>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -115,7 +111,7 @@ const Favorites = (): JSX.Element => {
           </Box>
         </div>
       ) : (
-        <p>Favorites list is empty </p>
+        <h3>Favorites list is empty </h3>
       )}
     </section>
   );

@@ -13,7 +13,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import './header.scss';
 import { InputBase } from '@mui/material';
 import MenuElement from '../../elements/menu/menuElement';
-import { API_KEY, API_LINK, ROUTES } from '../../variables';
+import { ROUTES } from '../../variables';
 import { IMovie, IPerson, ITvShow, IUser } from '../../interfaces';
 import { useHistory } from 'react-router-dom';
 import SignIn from '../signIn/signIn';
@@ -21,6 +21,7 @@ import SignUp from '../signUp/signUp';
 import { useDispatch, useSelector } from 'react-redux';
 import getUser from '../../redux/selectors';
 import { authAction } from '../../redux/actions';
+import { searchNewValue } from '../../appAPI/api';
 
 //      start search settings          //
 const Search = styled('div')(({ theme }) => ({
@@ -64,7 +65,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 //     end search settings   ///
 
-Modal.setAppElement('#root');
+if (process.env.NODE_ENV !== 'test') Modal.setAppElement('#root');
+// Modal.setAppElement('#root');
 
 const Header = (): JSX.Element => {
   const [searchValue, setSearchValue] = useState({
@@ -80,7 +82,7 @@ const Header = (): JSX.Element => {
   const user: IUser | null = useSelector(getUser);
 
   //         search methods               //
-  const getSearchItem = (search: React.ChangeEvent<HTMLInputElement>) => {
+  const getSearchItem = async (search: React.ChangeEvent<HTMLInputElement>) => {
     const newSearch = search.target.value;
     setSearchValue({
       show: newSearch.trim().length > 2 ? true : false,
@@ -89,24 +91,10 @@ const Header = (): JSX.Element => {
 
     if (newSearch.trim().length > 2) {
       try {
-        fetch(
-          `${API_LINK}search/multi${API_KEY}&language=en-US&query=${newSearch}&page=1&include_adult=false`
-        )
-          .then((response) => response.json())
-          .then((response) => {
-            const movieToShow: IMovie[] = response.results
-              .filter((searchItem: IMovie) => searchItem.media_type === 'movie')
-              .slice(0, 5);
-            setSearchMovie(movieToShow);
-            const tvShowToShow: ITvShow[] = response.results
-              .filter((searchItem: ITvShow) => searchItem.media_type === 'tv')
-              .slice(0, 5);
-            setSearchTvShow(tvShowToShow);
-            const peopleToShow: IPerson[] = response.results
-              .filter((searchItem: IPerson) => searchItem.media_type === 'person')
-              .slice(0, 5);
-            setSearchPeople(peopleToShow);
-          });
+        const searches = await searchNewValue(newSearch);
+        setSearchMovie(searches.movieToShow);
+        setSearchTvShow(searches.tvShowToShow);
+        setSearchPeople(searches.peopleToShow);
       } catch (error) {
         console.log(error);
       }
@@ -213,7 +201,7 @@ const Header = (): JSX.Element => {
   return (
     <header className="header">
       <div className="left-part">
-        <MenuElement title={<MenuIcon />}>
+        <MenuElement title={<MenuIcon />} data-testid="MenuIcon">
           <MenuItem
             sx={menuItemStyle}
             onClick={() => {
@@ -340,6 +328,7 @@ const Header = (): JSX.Element => {
             )}
           </IconButton>
           <MenuElement
+            data-testid="userMenuIcon"
             title={
               user ? (
                 <AccountCircleRoundedIcon className="icon" />
@@ -349,7 +338,11 @@ const Header = (): JSX.Element => {
             }
           >
             {user ? (
-              <MenuItem sx={profileMenuItemStyle} onClick={() => setRoute(ROUTES.PROFILE_PAGE)}>
+              <MenuItem
+                data-testid="rightMenuItem"
+                sx={profileMenuItemStyle}
+                onClick={() => setRoute(ROUTES.PROFILE_PAGE)}
+              >
                 Profile
               </MenuItem>
             ) : (

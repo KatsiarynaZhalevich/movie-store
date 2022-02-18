@@ -51,7 +51,7 @@ function App(): JSX.Element {
     );
   }
   return (
-    <div className="App">
+    <div className="App" data-testid="app">
       <Router>
         <Header />
         <Suspense fallback={<div className="content">Loading...</div>}>

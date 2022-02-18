@@ -5,7 +5,8 @@ export type State = {
   user: IUser | null;
 };
 
-const initialState: State = { user: null };
+export const initialState: State = { user: null };
+
 const reducer = (state: State = initialState, action: UserAction | Favorite): State => {
   switch (action.type) {
     case 'auth':
