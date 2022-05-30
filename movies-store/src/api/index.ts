@@ -1,6 +1,7 @@
+import { IUser } from './../interfaces';
 import express, { Request, Response } from 'express';
 import CORS from 'cors';
-import { IUser } from '../interfaces';
+
 import {
   addFavoriteItem,
   createToken,
@@ -47,8 +48,10 @@ app.post('/api/auth/signUp', (req: Request, res: Response) => {
     const { id } = users[users.length - 1];
     const newUser: IUser = req.body;
     newUser.id = id + 1;
-    newUser.favorites.movie = [];
-    newUser.favorites.tvShow = [];
+    newUser.favorites = {
+      movie: [],
+      tvShow: [],
+    };
     const token = createToken(newUser.id);
     res.send({ newUser, token });
     users.push(newUser);

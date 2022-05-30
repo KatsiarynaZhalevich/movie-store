@@ -16,6 +16,20 @@ jest.mock('../../appAPI/api.ts', () => ({
   getTvShows: jest.fn(),
 }));
 
+// const getMckedUser = jest.fn().mockResolvedValue(userStub());
+// const getMckedUser = jest.fn().mockResolvedValue(updateUserStub({name: 'Sasha'}));
+
+// function userStub() {
+//   return {
+//     id: 1,
+//     name: 'Kate',
+//   };
+// }
+
+// function updateUserStub(data) {
+//   return {...userStub(), ...data}
+// }
+
 describe('render favorites page', () => {
   it('check initial state without movie or tvShow', () => {
     const { getByText } = render(

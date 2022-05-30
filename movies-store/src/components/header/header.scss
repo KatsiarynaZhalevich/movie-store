@@ -23,6 +23,11 @@
     h2:hover {
       cursor: pointer;
     }
+    h2 {
+      @media (max-width: 767px) {
+        display: none;
+      }
+    }
   }
 
   .right-part {
@@ -56,6 +61,7 @@
         padding-left: 0;
       }
       .search-items-wrapper {
+        background-color: $color-white;
         position: absolute;
         border: 1px solid $color-grey;
         border-radius: 4px;
@@ -93,10 +99,25 @@
             border-bottom: 1px solid $color-black;
             padding: 5px 10px;
           }
+          @media (max-width: 767px) {
+            width: 100%;
+          }
         }
         .empty-search-list {
           color: $color-grey;
           padding: 5px;
+        }
+        p {
+          color: $color-black;
+          background-color: $color-white;
+          padding: 5px;
+          width: 254px;
+        }
+        @media (max-width: 767px) {
+          width: 100%;
+          position: fixed;
+          left: 0;
+          top: 70px;
         }
       }
     }

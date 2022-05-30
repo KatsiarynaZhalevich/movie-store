@@ -260,7 +260,9 @@ const Search = (): JSX.Element => {
               value={popularity}
               onChange={changePopularity}
             >
-              <MenuItem value="" sx={{ height: '36px' }}></MenuItem>
+              <MenuItem value="" sx={{ height: '36px' }}>
+                No sorting
+              </MenuItem>
               <MenuItem value="ask">Asc</MenuItem>
               <MenuItem value="desc">Desc</MenuItem>
             </Select>
@@ -278,7 +280,9 @@ const Search = (): JSX.Element => {
               value={voteAverage}
               onChange={changeVoteAverage}
             >
-              <MenuItem value="" sx={{ height: '36px' }}></MenuItem>
+              <MenuItem value="" sx={{ height: '36px' }}>
+                No sorting
+              </MenuItem>
               <MenuItem value="ask">Asc</MenuItem>
               <MenuItem value="desc">Desc</MenuItem>
             </Select>
@@ -330,7 +334,7 @@ const Search = (): JSX.Element => {
                       }}
                     />
                   }
-                  label="tvShow"
+                  label="TV show"
                 />
               </RadioGroup>
             </FormControl>
@@ -338,7 +342,7 @@ const Search = (): JSX.Element => {
           <div className="movies-filters">
             <div className="filter">
               <FormControl size="small">
-                <InputLabel id="demo-controlled-open-select-label">Genre</InputLabel>
+                <InputLabel id="genre">Genre</InputLabel>
                 <Select
                   sx={{
                     color: '#1f1f1f',

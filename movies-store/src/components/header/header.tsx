@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { styled, alpha } from '@mui/material/styles';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 import NoAccountsIcon from '@mui/icons-material/NoAccounts';
@@ -22,6 +22,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import getUser from '../../redux/selectors';
 import { authAction } from '../../redux/actions';
 import { searchNewValue } from '../../appAPI/api';
+import useDebounce from '../../hooks';
 
 //      start search settings          //
 const Search = styled('div')(({ theme }) => ({
@@ -80,28 +81,35 @@ const Header = (): JSX.Element => {
   const [modalIsOpen, setModalIsOpen] = useState({ signIn: false, signUp: false });
   const dispatch = useDispatch();
   const user: IUser | null = useSelector(getUser);
+  const debounce = useDebounce<string>(searchValue.value, 1000);
 
   //         search methods               //
-  const getSearchItem = async (search: React.ChangeEvent<HTMLInputElement>) => {
+  const getSearchItem = (search: React.ChangeEvent<HTMLInputElement>) => {
     const newSearch = search.target.value;
     setSearchValue({
       show: newSearch.trim().length > 2 ? true : false,
       value: newSearch.trim() ? newSearch : '',
     });
-
-    if (newSearch.trim().length > 2) {
-      try {
-        const searches = await searchNewValue(newSearch);
-        setSearchMovie(searches.movieToShow);
-        setSearchTvShow(searches.tvShowToShow);
-        setSearchPeople(searches.peopleToShow);
-      } catch (error) {
-        console.log(error);
-      }
-    }
   };
+
+  useEffect(() => {
+    const getSearch = async () => {
+      if (searchValue.value.length > 2) {
+        try {
+          const searches = await searchNewValue(searchValue.value);
+          setSearchMovie(searches.movieToShow);
+          setSearchTvShow(searches.tvShowToShow);
+          setSearchPeople(searches.peopleToShow);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+    getSearch();
+  }, [debounce]);
+
   const closeSearch = (): void => {
-    setSearchValue({ ...searchValue, show: false });
+    setSearchValue({ ...searchValue, show: true });
   };
 
   const checkEnter = (event: React.KeyboardEvent<HTMLInputElement>): void => {
@@ -153,7 +161,6 @@ const Header = (): JSX.Element => {
         });
         break;
       case ROUTES.PERSON_ROUTE:
-        console.log('person');
         history.push({
           pathname: path,
           search: `id=${id}`,
@@ -198,6 +205,7 @@ const Header = (): JSX.Element => {
       console.log(error);
     }
   };
+
   return (
     <header className="header">
       <div className="left-part">
@@ -253,29 +261,32 @@ const Header = (): JSX.Element => {
               value={searchValue.value}
             />
             {searchValue.show ? (
-              <div className="search-items-wrapper">
-                <ul className="search-items">
-                  <li className="first">People</li>
-                  {searchPeople.length > 0 ? (
-                    searchPeople.map((itemPeople: IPerson) => (
-                      <li key={itemPeople.id}>
-                        <button
-                          type="button"
-                          onMouseDown={() => setRoute(ROUTES.PERSON_ROUTE, '', '', itemPeople.id)}
-                        >
-                          {itemPeople.name}
-                        </button>
-                      </li>
-                    ))
-                  ) : (
-                    <li className="empty-search-list">nothing to show</li>
-                  )}
-                </ul>
-                <ul className="search-items">
-                  <li className="first">Movies</li>
-                  {searchMovie.length > 0 ? (
-                    searchMovie.map((itemMovie: IMovie) => (
-                      <li key={itemMovie.id}>
+              <div className="search-items-wrapper" data-testid="searchList">
+                {searchPeople.length > 0 && (
+                  <ul className="search-items">
+                    <li className="first" data-testid="people">
+                      People
+                    </li>
+                    {
+                      // search
+                      searchPeople.map((itemPeople: IPerson) => (
+                        <li key={`people ${itemPeople.id}`} role="itemPeople">
+                          <button
+                            type="button"
+                            onMouseDown={() => setRoute(ROUTES.PERSON_ROUTE, '', '', itemPeople.id)}
+                          >
+                            {itemPeople.name}
+                          </button>
+                        </li>
+                      ))
+                    }
+                  </ul>
+                )}
+                {searchMovie.length > 0 && (
+                  <ul className="search-items">
+                    <li className="first">Movies</li>
+                    {searchMovie.map((itemMovie: IMovie) => (
+                      <li key={itemMovie.id} role="itemMovies">
                         <button
                           type="button"
                           onMouseDown={() =>
@@ -285,16 +296,14 @@ const Header = (): JSX.Element => {
                           {itemMovie.title}
                         </button>
                       </li>
-                    ))
-                  ) : (
-                    <li className="empty-search-list">nothing to show</li>
-                  )}
-                </ul>
-                <ul className="search-items">
-                  <li className="first">TvShow</li>
-                  {searchTvShow.length > 0 ? (
-                    searchTvShow.map((itemTvShow: ITvShow) => (
-                      <li key={itemTvShow.id}>
+                    ))}
+                  </ul>
+                )}
+                {searchTvShow.length > 0 && (
+                  <ul className="search-items">
+                    <li className="first">TvShow</li>
+                    {searchTvShow.map((itemTvShow: ITvShow) => (
+                      <li key={itemTvShow.id} role="itemTvShow">
                         <button
                           type="button"
                           onMouseDown={() =>
@@ -304,11 +313,14 @@ const Header = (): JSX.Element => {
                           {itemTvShow.name}
                         </button>
                       </li>
-                    ))
-                  ) : (
-                    <li className="empty-search-list">nothing to show</li>
-                  )}
-                </ul>
+                    ))}
+                  </ul>
+                )}
+                {searchPeople.length === 0 &&
+                searchMovie.length === 0 &&
+                searchTvShow.length === 0 ? (
+                  <p>No results to show</p>
+                ) : null}
               </div>
             ) : null}
           </Search>
@@ -377,7 +389,7 @@ const Header = (): JSX.Element => {
             isOpen={modalIsOpen.signUp}
           >
             <h1>SignUp</h1>
-            <CloseIcon className="close" />
+            <CloseIcon onClick={closeModal} className="close" />
             <SignUp closeModal={closeModal} />
             {/* <SignUp setRoute={route} closeModal={closeModal} /> */}
           </Modal>

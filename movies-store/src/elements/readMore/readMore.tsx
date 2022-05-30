@@ -13,7 +13,7 @@ const ReadMore = ({ children }: Props) => {
     <p className="text">
       {isReadMore ? children.slice(0, 350) : children}
       <span onClick={toggleReadMore} className="read-or-hide">
-        {isReadMore ? '...read more' : ' show less'}
+        {isReadMore ? ' ...read more' : ' show less'}
       </span>
     </p>
   );

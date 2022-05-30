@@ -11,5 +11,13 @@
   { "username": "test", "password": "qq11", "id": 7, "favorites": { "movie": [], "tvShow": [] } },
   { "username": "gjj", "password": "rr4", "id": 8, "favorites": { "movie": [], "tvShow": [] } },
   { "username": "test1", "password": "ee3", "id": 9, "favorites": { "movie": [], "tvShow": [] } },
-  { "username": "vvv", "password": "vvv2", "id": 10, "favorites": { "movie": [], "tvShow": [] } }
+  { "username": "vvv", "password": "vvv2", "id": 10, "favorites": { "movie": [], "tvShow": [] } },
+  {
+    "username": "trysryt",
+    "password": "ttt5",
+    "id": 11,
+    "favorites": { "movie": [], "tvShow": [] }
+  },
+  { "username": "name2", "password": "www2", "id": 12, "favorites": { "movie": [], "tvShow": [] } },
+  { "username": "name3", "password": "www2", "id": 13, "favorites": { "movie": [], "tvShow": [] } }
 ]

@@ -1,71 +1,75 @@
 .result-item {
-    position: relative;
-    margin: 10px 0;
-    display: flex;
-    background-color: $color-lightGrey;
-    border-radius: 4px;
-    padding: 10px;
-    padding-right: 30px;
-    .favorite {
-      position: absolute;
-      top: 0;
-      right: -8px;
-    }
-    &:first-child {
-      margin-top: 0;
-    }
-    .image-wrapper {
-      width: 85px;
-      margin: 5px;
-      margin-right: 20px;
-      img {
-        width: 100%;
-        min-width: 85px;
-        border-radius: 4px;
-        &:hover {
-          cursor: pointer;
-        }
-      }
-    }
-    .info {
-      padding-top: 5px;
-      h3:hover {
-        cursor: pointer;
-        color: $color-orange;
-      }
-      p {
-        text-overflow: ellipsis;
-        overflow: hidden;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        margin-top: 15px;
-      }
-    }
-  }
-  .error {
+  position: relative;
+  margin: 10px 0;
+  display: flex;
+  background-color: $color-lightGrey;
+  border-radius: 4px;
+  padding: 10px;
+  padding-right: 30px;
+  .favorite {
     position: absolute;
-    bottom: 10px;
-    color: $color-error;
-    font-size: 11px;
-    left: 15px;
-    &.-pass {
-      left: -5px;
-      bottom: 5px;
-    }
-    &.-confirm {
-      bottom: 85px;
-      left: 35px;
-    }
-    &.-server {
-      bottom: 80px;
-      left: 90px;
-      &.-signUp {
-        bottom: 80px;
+    top: 0;
+    right: -8px;
+  }
+  &:first-child {
+    margin-top: 0;
+  }
+  .image-wrapper {
+    width: 85px;
+    margin: 5px;
+    margin-right: 20px;
+    img {
+      width: 100%;
+      min-width: 85px;
+      border-radius: 4px;
+      &:hover {
+        cursor: pointer;
       }
     }
   }
+  .info {
+    padding-top: 5px;
+    h3:hover {
+      cursor: pointer;
+      color: $color-orange;
+    }
+    p {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      margin-top: 15px;
+    }
+  }
+}
+.error {
+  position: absolute;
+  bottom: 10px;
+  color: $color-error;
+  font-size: 11px;
+  left: 15px;
+  &.-pass {
+    left: -5px;
+    bottom: 5px;
+  }
+  &.-confirm {
+    bottom: 85px;
+    left: 35px;
+  }
+  &.-server {
+    bottom: 80px;
+    left: 90px;
+    &.-signUp {
+      bottom: 80px;
+    }
+  }
+}
 
-  // .progress {
-  //   margin: auto;
-  // }
+img {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  object-fit: contain;
+}

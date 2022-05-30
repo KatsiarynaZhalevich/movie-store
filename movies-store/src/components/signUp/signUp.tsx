@@ -84,7 +84,7 @@ const SignUp = ({ closeModal }: Props): JSX.Element => {
           }
         });
     } catch (error) {
-      console.log(error);
+      console.log('catch error', error);
     }
   };
 

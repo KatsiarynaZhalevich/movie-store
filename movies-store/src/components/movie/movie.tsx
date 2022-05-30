@@ -16,13 +16,7 @@ const Movie = (): JSX.Element => {
   const location = useLocation();
   const search = new URLSearchParams(location.search);
   const [id, setId] = useState(search.get('id'));
-  const [mediaType, setMediaType] = useState(
-    search.get('media_type') === 'movie'
-      ? 'movie'
-      : search.get('media_type') === 'tvShow'
-      ? 'tv'
-      : ''
-  );
+  const [mediaType, setMediaType] = useState(search.get('media_type') === 'movie' ? 'movie' : 'tv');
   const [load, setLoad] = useState(false);
   const [data, setData] = useState<IMovie | ITvShow>();
   const [similar, setSimilar] = useState([]);
@@ -47,6 +41,7 @@ const Movie = (): JSX.Element => {
       .then((response) => {
         if (response) {
           setLoad(false);
+          console.log();
 
           response.production_countries = response.production_countries
             .map((country: ICountry) => {
@@ -91,7 +86,7 @@ const Movie = (): JSX.Element => {
       .then((response) => {
         if (response) {
           setLoad(false);
-          setActors(response.cast.slice(0, 10));
+          setActors(response.cast?.slice(0, 10));
         }
       })
       .catch((error) => {

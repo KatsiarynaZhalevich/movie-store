@@ -18,10 +18,10 @@ export interface IToken {
 
 export interface IBaseMovie {
   id: number;
-  genres?: string;
   poster_path: string;
   overview: string;
   media_type?: string;
+  genres?: string;
   createdBy?: string;
   production_companies?: string;
   production_countries?: string;

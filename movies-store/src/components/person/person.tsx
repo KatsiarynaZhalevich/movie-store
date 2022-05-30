@@ -80,7 +80,10 @@ const Person = (): JSX.Element => {
               vote_average: item.vote_average || 0,
               media_type: item.media_type || '',
             };
-            crewArr.push(credit);
+            const sameId = crewArr.findIndex((crewCredit) => crewCredit.id === credit.id);
+            sameId >= 0
+              ? (crewArr[sameId].job = crewArr[sameId].job + ', ' + credit.job)
+              : crewArr.push(credit);
           });
           response.cast.map((item: IMovie | ITvShow) => {
             const credit = {
@@ -94,15 +97,23 @@ const Person = (): JSX.Element => {
               vote_average: item.vote_average || 0,
               media_type: item.media_type || '',
             };
+
             if (item.media_type === 'movie') {
-              movieArr.push(credit);
+              const sameId = movieArr.findIndex((movieCredit) => movieCredit.id === credit.id);
+              sameId >= 0
+                ? (movieArr[sameId].job = movieArr[sameId].character + ', ' + credit.character)
+                : movieArr.push(credit);
             } else {
-              tvArr.push(credit);
+              const sameId = tvArr.findIndex((tvShowCredit) => tvShowCredit.id === credit.id);
+              sameId >= 0
+                ? (tvArr[sameId].job = tvArr[sameId].character + ', ' + credit.character)
+                : tvArr.push(credit);
             }
           });
           setCrewCredits(sortCredits(crewArr));
           setMovieCredits(sortCredits(movieArr));
           setTvShowsCredits(sortCredits(tvArr));
+          setLoadCredits(false);
         }
       });
   }, [location.search]);
@@ -145,7 +156,6 @@ const Person = (): JSX.Element => {
       </div>
     );
   }
-
   return (
     <div className="page content">
       <div className="person-info ">
@@ -212,21 +222,27 @@ const Person = (): JSX.Element => {
               </Box>
               <TabPanel value="1">
                 {movieCredits.length > 0 ? (
-                  movieCredits.map((movie: ICredits) => (
-                    <div
-                      key={movie.id}
-                      className="credit-item"
-                      onClick={() => setRoute(movie.id, movie.media_type)}
-                    >
-                      <div className="credit-title">
-                        <h4>
-                          {movie.title} {movie.year ? `(${movie.year})` : ''}
-                        </h4>
-                        <p>{movie.vote_average}</p>
-                      </div>
-                      <p>{movie.character}</p>
+                  <>
+                    <div className="list-header">
+                      <p>Title</p>
+                      <p>Rating</p>
                     </div>
-                  ))
+                    {movieCredits.map((movie: ICredits) => (
+                      <div
+                        key={`movie-${movie.id}`}
+                        className="credit-item"
+                        onClick={() => setRoute(movie.id, movie.media_type)}
+                      >
+                        <div className="credit-title">
+                          <h4>
+                            {movie.title} {movie.year ? `(${movie.year})` : ''}
+                          </h4>
+                          <p>{movie.vote_average}</p>
+                        </div>
+                        <p>{movie.character}</p>
+                      </div>
+                    ))}
+                  </>
                 ) : loadCredits ? (
                   <div className="credits-spinner">
                     <CircularProgress sx={PROGRESS_STYLE} />
@@ -237,42 +253,62 @@ const Person = (): JSX.Element => {
               </TabPanel>
               <TabPanel value="2">
                 {tvShowsCredits.length > 0 ? (
-                  tvShowsCredits.map((tvShow: ICredits, index: number) => (
-                    <div
-                      key={index}
-                      className="credit-item"
-                      onClick={() => setRoute(tvShow.id, tvShow.media_type)}
-                    >
-                      <div className="credit-title">
-                        <h4>
-                          {tvShow.title} {tvShow.year ? `(${tvShow.year})` : ''}
-                        </h4>
-                        <p>{tvShow.vote_average}</p>
-                      </div>
-                      <p>{tvShow.character}</p>
+                  <>
+                    <div className="list-header">
+                      <p>Title</p>
+                      <p>Rating</p>
                     </div>
-                  ))
+                    {tvShowsCredits.map((tvShow: ICredits) => (
+                      <div
+                        key={`tvShow-${tvShow.id}`}
+                        className="credit-item"
+                        onClick={() => setRoute(tvShow.id, tvShow.media_type)}
+                      >
+                        <div className="credit-title">
+                          <h4>
+                            {tvShow.title} {tvShow.year ? `(${tvShow.year})` : ''}
+                          </h4>
+                          <p>{tvShow.vote_average}</p>
+                        </div>
+                        <p>{tvShow.character}</p>
+                      </div>
+                    ))}
+                  </>
+                ) : loadCredits ? (
+                  <div className="credits-spinner">
+                    <CircularProgress sx={PROGRESS_STYLE} />
+                  </div>
                 ) : (
                   <p>nothing to show</p>
                 )}
               </TabPanel>
               <TabPanel value="3">
                 {crewCredits.length > 0 ? (
-                  crewCredits.map((crew: ICredits, index: number) => (
-                    <div
-                      key={index}
-                      className="credit-item"
-                      onClick={() => setRoute(crew.id, crew.media_type)}
-                    >
-                      <div className="credit-title">
-                        <h4>
-                          {crew.title} {crew.year ? `(${crew.year})` : ''}
-                        </h4>
-                        <p>{crew.vote_average}</p>
-                      </div>
-                      <p>{crew.job}</p>
+                  <>
+                    <div className="list-header">
+                      <p>Title</p>
+                      <p>Rating</p>
                     </div>
-                  ))
+                    {crewCredits.map((crew: ICredits) => (
+                      <div
+                        key={`crew-${crew.id}`}
+                        className="credit-item"
+                        onClick={() => setRoute(crew.id, crew.media_type)}
+                      >
+                        <div className="credit-title">
+                          <h4>
+                            {crew.title} {crew.year ? `(${crew.year})` : ''}
+                          </h4>
+                          <p>{crew.vote_average}</p>
+                        </div>
+                        <p>{crew.job}</p>
+                      </div>
+                    ))}
+                  </>
+                ) : loadCredits ? (
+                  <div className="credits-spinner">
+                    <CircularProgress sx={PROGRESS_STYLE} />
+                  </div>
                 ) : (
                   <p>nothing to show</p>
                 )}

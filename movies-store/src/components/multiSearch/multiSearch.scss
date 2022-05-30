@@ -29,6 +29,7 @@
       > button[disabled] {
         background-color: $color-lightGrey;
         border: 1px solid $color-black;
+
       }
     }
     .empty-search-list {
@@ -42,5 +43,13 @@
         height: 30px;
       }
     }
+    .result-item {
+      @media (max-width: 576px) {
+        flex-direction: column;
+      }
+    }
+  }
+  @media (max-width: 576px) {
+    padding: 30px 20px;
   }
 }

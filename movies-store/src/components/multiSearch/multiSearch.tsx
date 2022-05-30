@@ -93,7 +93,7 @@ const MultiSearch = (): JSX.Element => {
                 setRoute(ROUTES.MULTI_SEARCH_CATEGORY_PAGE_ROUTE, 'person');
               }}
             >
-              Try to search more
+              search more
             </Button>
           </div>
         )}
@@ -136,7 +136,7 @@ const MultiSearch = (): JSX.Element => {
                 setRoute(ROUTES.MULTI_SEARCH_CATEGORY_PAGE_ROUTE, 'movie');
               }}
             >
-              Try to search more
+              search more
             </Button>
           </div>
         )}
@@ -180,7 +180,7 @@ const MultiSearch = (): JSX.Element => {
                 setRoute(ROUTES.MULTI_SEARCH_CATEGORY_PAGE_ROUTE, 'tvShow');
               }}
             >
-              Try to search more
+              search more
             </Button>
           </div>
         )}
